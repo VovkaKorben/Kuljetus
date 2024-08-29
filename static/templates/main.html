@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>{{ page_title }}</title>
     <link href="../css/main.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
@@ -12,28 +12,23 @@
 </head>
 
 <body>
-    {{ page_header1 }}<br>
+
+    <span data-lang="page_header_1">page_header1</span><br>
+    <span data-lang="page_header_2">page_header2</span><br>
     {{ page_header2 }}<br>
     <br>
-    Lang
     <div id="lang">
         {% for lang in languages %}
-        <img src="../img/{{ lang.img }}" width="24" height="24" alt="{{ lang.alt }}" />
+        <img src="../img/lang{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="24" height="24" alt="{{ lang.abbr }}" />
         {% endfor %}
     </div>
 
-    <div id="lang2">
-        <img src="../img/lang0.png" width="24" height="24" alt="eng" />
-        <img src="../img/lang1.png" width="24" height="24" alt="fin" />
-        <img src="../img/lang2.png" width="24" height="24" alt="swe" />
-        <img src="../img/lang3.png" width="24" height="24" alt="rus" />
-        <img src="../img/lang4.png" width="24" height="24" alt="ukr" />
-    </div>
+
     <br>
-    <label for="mista">{{ city_from }}:</label>
-    <input type="text" name="mista" id="mista" class="txtinput" data-id="0">
-    <label for="mihin">{{ city_to }}:</label>
-    <input type="text" name="mihin" id="mihin" class="txtinput" data-id="1">
+    <label for="mista"  data-lang="city_from">city_from</label>
+    <input type="text" name="mista" id="mista" class="txtinput" data-id="0" >
+    <label for="mihin"   data-lang="city_to">city_to</label>
+    <input type="text" name="mihin" id="mihin" class="txtinput" data-id="1" >
     <br>
     Calculations:<div></div>
     <br>
@@ -41,6 +36,7 @@
     {{ phone_num1 }}<br>
     040 222 33 44<br>
     {{ phone_num2 }}<br>
+    <div id='dbg'>debug</div>
 </body>
 
 </html>

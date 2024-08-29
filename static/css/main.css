@@ -39,9 +39,21 @@ label
 #lang img
 {
     opacity:0.3;
+   /* border: 2px solid #555;    border-radius: 4px; */
+    cursor:pointer;
+}
+#lang img.selected
+{
+    opacity:1;
 }
 #lang img:hover
 {
     opacity:1;
     transition: all 0.3s ease-out;
+}
+
+#dbg{
+    border:1px red solid;
+    height:200px;
+     font-size:12px;
 }

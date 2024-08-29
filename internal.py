@@ -2,48 +2,46 @@ from html.parser import HTMLParser
 from io import StringIO
 from datetime import datetime
 import time
-import os
 from hashlib import md5
-#DEBUG = True
-#DEBUG = True
-from flask import Flask
-from flask import session
-from flask_session import Session
+
 import sqlite3
 import io
 import traceback
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 
 
 
-app = Flask(__name__)
+debug = False
+app = Flask(__name__, static_url_path="", static_folder="static", template_folder="static/templates")
 
+class SafeDictUpdater(dict):
+    def update_safe(self, new_data):
+        self._recursive_update(self, new_data)
 
-app = Flask(__name__,
-            static_url_path='', 
-            static_folder='static',
-            template_folder='static/templates')
+    def _recursive_update(self, original, new_data):
+        for key, value in new_data.items():
+            if isinstance(value, dict) and key in original:
+                if isinstance(original[key], dict):
+                    self._recursive_update(original[key], value)
+                else:
+                    original[key] = value
+            else:
+                original[key] = value
 
-app.config['WTF_CSRF_ENABLED'] = False
-
-
-# Конфигурация Flask-Session
-app.config['SESSION_TYPE'] = 'filesystem'  # Использование файловой системы для хранения сессий
-app.config['SECRET_KEY'] = 'your_secret_key'  # Секретный ключ для защиты данных сессий
-
-# Инициализация сессии
-Session(app)
-
-
+    def update(self, *args, **kwargs):
+        for arg in args:
+            if isinstance(arg, dict):
+                self.update_safe(arg)
+            else:
+                raise TypeError(f"Expected dict, got {type(arg).__name__}")
+        if kwargs:
+            self.update_safe(kwargs)
 
 class db_error(Exception):
     """Base class for other exceptions"""
 
     pass
-
-
-DATABASE = "finland.db"
 
 
 def load_template(templatefilename):
@@ -116,16 +114,10 @@ def read_sql_file(sqlfilename):
             sqlfile.close
     except:
         # return {'error': True, 'data': f'Error in <b>read_db2</b>\nFilename: <b>{sqlfilename}</b>\nQuery: <b>{sqlquery}</b>\n{traceback.format_exc()}\n'}
-        raise db_error(
-            f"Error in <b>read_sql_file</b>\nSQL filename: <b>{sqlfilename}</b><hr>\n{traceback.format_exc()}\n"
-        )
+        raise db_error(f"Error in <b>read_sql_file</b>\nSQL filename: <b>{sqlfilename}</b><hr>\n{traceback.format_exc()}\n")
 
 
-def read_db(conn, sqlfilename, params):  # for select sql
-    """
-    sqlfilename: path to sql query file
-    params: dict with params
-    """
+def read_db(sqlfilename, params={}):  # for select sql
     sqlpath = "static/sql/" + sqlfilename
     if not os.path.isfile(sqlpath):
         raise db_error(f"Error while fetching DB\nQuery {sqlfilename} not exists!")
@@ -135,7 +127,7 @@ def read_db(conn, sqlfilename, params):  # for select sql
         try:
             sqlquery = sqlfile.read()
 
-            cur = conn.execute(sqlquery, params)
+            cur = db_conn().execute(sqlquery, params)
             try:
                 data = cur.fetchall()
             finally:
@@ -172,20 +164,24 @@ def make_raw(cursor, row):
     return row[0]
 
 
-def get_conn(dbname: str, debug: bool = False):
-    try:
-        conn_normal = sqlite3.connect(dbname)
-        conn_normal.row_factory = make_dicts
-        if debug:
-            conn_normal.set_trace_callback(sqlite_trace_callback)
-    except:
-        return None
-    return conn_normal
+
+def db_conn():
+    if "db" not in g:
+        try:
+            g.db = sqlite3.connect("finland.db")
+            g.db.row_factory = make_dicts
+            if debug:
+                g.db.set_trace_callback(sqlite_trace_callback)
+
+        except:
+            return None
+    return g.db
 
 
-def close_db():
-    global conn_normal, conn_raw
-    if conn_normal is not None:
-        conn_normal.close()
-    if conn_raw is not None:
-        conn_raw.close()
+@app.teardown_appcontext
+def teardown_db(exception):
+    db = g.pop("db", None)
+
+    if db is not None:
+        db.close()
+
