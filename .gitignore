@@ -4,3 +4,5 @@
 /venv
 /__pycache__
 /dist
+parse_city.py
+parse_dist.py
