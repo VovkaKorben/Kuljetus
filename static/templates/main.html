@@ -3,40 +3,54 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>{{ page_title }}</title>
-    <link href="../css/main.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="../js/main.js"></script>
-
+  <meta charset="UTF-8">
+  <title data-lang="page_title">page_title</title>
+  <link href="../css/main.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="../js/main.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+  <div data-lang="page_header_1" class="hdr1">page_header1</div>
 
-    <span data-lang="page_header_1">page_header1</span><br>
-    <span data-lang="page_header_2">page_header2</span><br>
-    {{ page_header2 }}<br>
-    <br>
-    <div id="lang">
-        {% for lang in languages %}
-        <img src="../img/lang{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="24" height="24" alt="{{ lang.abbr }}" />
-        {% endfor %}
+  <div data-lang="page_header_2" class="hdr2">page_header2</div>
+
+  <div id="lang"> {% for lang in languages %} <img src="../img/lang{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="24" height="24" alt="{{ lang.abbr }}" /> {% endfor %} </div>
+
+  <div data-lang="descr" class="fntsmall">descr</div>
+  <div class="flexinputs">
+    <div class="dropdown_box">
+      <label for="city1" data-lang="city_from">city_from</label>
+      <div class="dropdown_cont">
+        <input type="text" name="city1" id="city1" class="dropdown_edit" data-id="1" value="ha">
+        <div id='city1_dd' class="dropdown_list dropdown_hide">city1_dd</div>
+      </div>
     </div>
-
-
-    <br>
-    <label for="mista"  data-lang="city_from">city_from</label>
-    <input type="text" name="mista" id="mista" class="txtinput" data-id="0" >
-    <label for="mihin"   data-lang="city_to">city_to</label>
-    <input type="text" name="mihin" id="mihin" class="txtinput" data-id="1" >
-    <br>
-    Calculations:<div></div>
-    <br>
-    <br>
-    {{ phone_num1 }}<br>
-    040 222 33 44<br>
-    {{ phone_num2 }}<br>
-    <div id='dbg'>debug</div>
+    <div class="dropdown_box">
+      <label for="city2" data-lang="city_to">city_to</label>
+      <div class="dropdown_cont">
+        <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
+        <div id='city2_dd' class="dropdown_list dropdown_hide">city2_dd</div>
+      </div>
+    </div>
+  </div>
+  <!-- Calculations: -->
+  <div id="calculations"  class="fntsmall" ></div>
+  <span data-lang="phone_no" class="hdr1">040 222 33 44</span>
+  <!-- <div id='dbg'>debug</div> -->
+  <div id="messenger_icons" class="fntsmall"  data-lang="phone_descr">
+    <!-- <img src="../img/whats.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/tg.png" width="24" height="24" alt="Telegram" />    <img src="../img/viber.png" width="24" height="24" alt="Viber" />    <img src="../img/call.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/sms.png" width="24" height="24" alt="SMS" />   -->
+    Call / SMS / WhatsApp / Telegram / Viber
+  </div>
+  <img src="../img/karry.png" width="396" height="225" alt=""/>
+  <div class="footer fntsmall">
+    <div>Saatavilla Kuljetus Oy</div>
+    <div>Y-tunnus: 3472299-2</div>
+    <div>site by <a href="mailto:volodymyr.getalo@gmail.com">volodymyr.getalo@gmail.com</a></div>
+  </div>
 </body>
 
 </html>

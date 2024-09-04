@@ -13,9 +13,8 @@ function load_storage(key, def) {
         p = def;
     return p;
 }
-
 function parse_answer(result) {
-    if ('data'in result) {
+    if ('data' in result) {
         for (k in result.data) {
             // console.log('data parse_answer:', k, '', result.data[k]);
             save_storage(k, result.data[k]);
@@ -23,20 +22,20 @@ function parse_answer(result) {
 
     }
 
-    if ('dom'in result) {
+    if ('dom' in result) {
 
-        jQuery.each(result.dom, function(index, item) {
+        jQuery.each(result.dom, function (index, item) {
             // do something with `item` (or `this` is also `item` if you like)
             elem = $(item.selector);
             if (elem) {
-                if ('html'in item)
+                if ('html' in item)
                     $(elem).html(item.html);
-                if ('css_add'in item)
-                    jQuery.each(item.css_add, function(index, item) {
+                if ('css_add' in item)
+                    jQuery.each(item.css_add, function (index, item) {
                         $(elem).addClass(item);
                     });
-                if ('css_remove'in item)
-                    jQuery.each(item.css_remove, function(index, item) {
+                if ('css_remove' in item)
+                    jQuery.each(item.css_remove, function (index, item) {
                         $(elem).removeClass(item);
                     });
             }
@@ -44,7 +43,6 @@ function parse_answer(result) {
         });
     }
 }
-
 function send_data(data) {
 
     fetch('/parse_data', {
@@ -65,23 +63,115 @@ function send_data(data) {
 function init() {
     let data = {
         'lang': load_storage('lang', 0),
-        'city1': load_storage('city1', 'ccc'),
-        'city2': load_storage('city2', 'ddd'),
+        'city1': load_storage('city1', ''),
+        'city2': load_storage('city2', ''),
+        'sender': 0
     }
-    send_data( data);
+    send_data(data);
+    $('#city1').val(data.city1);
+    $('#city2').val(data.city2);
 
 }
+function txtinput_changed(edit) {
+    let sender = 10 + parseInt($(edit).data('id'));
+    let data = {
+        'city1': $('#city1').val(),
+        'city2': $('#city2').val(),
+        'lang': load_storage('lang', 0),
+        sender: sender
+    }
+    send_data(data);
+}
+function apply_city(elem) {
 
-$(document).ready(function() {
+    let parent = $(elem).parent('.dropdown_list');
+    let edit = $(parent).prev('.dropdown_edit');
+    let txt = $(elem).find('span[data-text]')[0];
+    $(edit).val(txt.innerText);
+    $(parent).addClass('dropdown_hide');
+    txtinput_changed(edit);
+}
+$(document).ready(function () {
 
     init();
-    $('#mista,#mihin').on('input', function() {
-        alert('123');
-    });
-    $('#lang img').on('click', function() {
-        lang_id = $(this).data('langid');
-        // alert('lang_id: ' + lang_id);
-        send_data({'lang': lang_id});
+
+    // text input handlers
+    $('.dropdown_edit').on('input', function () {
+        txtinput_changed(this);
+    }).on('focus', function () {
+        txtinput_changed(this);
+    }).on('blur', function () {// $(this).next('.dropdown_list').addClass("dropdown_hide");
+
+    }).on('keydown', function (e) {
+        let list = $(this).next('.dropdown_list');
+        // exit, if dropdown list not visible
+        if (!$(list).hasClass('dropdown_hide'))
+            return;
+
+        let handled = true;
+
+        let items = list.children();
+        // get current selection 
+        let sel_index = list.find('.selected').index();
+        let items_count = items.length;
+
+        switch (event.keyCode) {
+
+            case 38:
+                // arrow up
+                sel_index--;
+                if (sel_index < 0)
+                    sel_index = items_count - 1;
+                break;
+            case 40:
+                // arrow down
+                sel_index++;
+                if (sel_index >= items_count)
+                    sel_index = 0;
+                break;
+
+            case 13:
+                // enter
+                // if (sel_index >= 0 && sel_index < items_count) {
+                let selected = items.eq(sel_index);
+                apply_city(selected);
+
+                break;
+            default:
+                handled = false;
+        }
+        if (handled) {
+
+            items.removeClass('selected');
+            let selected = items.eq(sel_index);
+            selected.addClass('selected');
+
+            event.preventDefault();
+        }
+        ;
+
     });
 
+    $('.dropdown_list').on("mouseover", 'div', function () {
+        // console.log( $( this ).text() );
+        $(this).parent().children().removeClass('selected');
+        $(this).addClass('selected');
+    }).on("click", 'div', function () {
+        apply_city(this);
+
+    });
+
+    $('#lang').on('click', 'img', function () {
+        lang = $(this).data('langid');
+        send_data({
+            'city1': $('#city1').val(),
+            'city2': $('#city2').val(),
+            'lang': lang,
+            sender: 20
+        });
+    });
+    // $('#city1').trigger('focus');
+    // $('#city1').focus();
+    // txtinput_changed($('#city1'));
+    // $('#city1').focus();
 });

@@ -1,4 +1,4 @@
 select
-    lang_id
+    lang
 from
     lang;

@@ -12,7 +12,8 @@ from flask import Flask, jsonify, request, g
 
 
 
-debug = False
+# debug = False
+debug = True
 app = Flask(__name__, static_url_path="", static_folder="static", template_folder="static/templates")
 
 class SafeDictUpdater(dict):
@@ -143,16 +144,17 @@ def read_db(sqlfilename, params={}):  # for select sql
 
 def sqlite_trace_callback(value):
     # return
-    url = flask.request.base_url
-    url = url.split("/")[-1:]
-    url = url[0]
+    # url = flask.request.base_url
+    # url = url.split("/")[-1:]
+    # url = url[0]
 
     value = value.replace("\n", " ")
     while value.find("  ") != -1:
         value = value.replace("  ", " ")
 
     sqlite3log = open("sqlite3.log", "a")
-    sqlite3log.write(f"[{url}] {value}\n")
+    # sqlite3log.write(f"[{url}] {value}\n")
+    sqlite3log.write(f"{value}\n")
     sqlite3log.close()
 
 

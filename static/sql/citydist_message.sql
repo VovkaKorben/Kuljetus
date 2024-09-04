@@ -1,0 +1,1 @@
+SELECT translation from transl WHERE dom = 'calc'||:mode and lang=:lang
