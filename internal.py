@@ -12,8 +12,8 @@ from flask import Flask, jsonify, request, g
 
 
 
-# debug = False
-debug = True
+debug = False
+# debug = True
 app = Flask(__name__, static_url_path="", static_folder="static", template_folder="static/templates")
 
 class SafeDictUpdater(dict):
