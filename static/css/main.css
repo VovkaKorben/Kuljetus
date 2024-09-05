@@ -1,25 +1,24 @@
-.oswald400 {
-    font-family: "Oswald", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-}
-
 body {
     background-color: #111;
-    margin: 0;
-    padding: 0;
+    /* margin: 0; */
+    margin: 0px 500px;
     text-align: center;
 }
 
-body,input {
-    font-family: "Oswald", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 20px;
+body,input,html {
+    font-family: "Roboto Condensed", sans-serif;
+    
 }
-
+body,html {
+    
+    font-weight: 200;
+    font-size: 24px;
+}
+input,.dropdown_list div
+{
+    font-weight: 400;
+    font-size: 24px;
+}
 body,a {
     color: #eee;
 }
@@ -33,11 +32,6 @@ body,a {
     align-content: stretch;
 }
 
-.fntsmall {
-    font-size: smaller;
-    font-weight: 200 ;
-}
-
 .flex_cc {
     display: flex;
     flex-direction: row;
@@ -47,23 +41,8 @@ body,a {
     align-content: stretch;
 }
 
-#lang {
-    position: fixed;
-    right: 5px;
-    top: 5px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-    align-items: center;
-    align-content: stretch;
-}
-
 #lang img {
-    /* padding:0px;margin:0px; */
-    /* border:1px solid yellow; */
     opacity: 0.3;
-    /* border: 2px solid #555;    border-radius: 4px; */
     cursor: pointer;
 }
 
@@ -76,50 +55,25 @@ body,a {
     transition: all 0.3s ease-out;
 }
 
-.flexinputs {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-}
-
-.dropdown_box {
-    /* border: 2px dashed #ff0000; */
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: stretch;
-    padding: 50px;
-}
-
 .dropdown_box label {
     padding-right: 10px;
 }
 
 .dropdown_cont {
     position: relative;
-    /* Создает контекст позиционирования для дочерних элементов */
     width: 300px;
-    /* Ширина родительского div */
-    height: 50px;
-    /* Высота родительского div */
-    /* border: 1px #d7a600 dotted; */
+    height: 50px; border: 1px #3400e3 dotted;
 }
 
 .dropdown_edit {
-    /* position: absolute; */
     padding: 10px ;
     border: 2px solid #434343;
     border-radius: 6px;
     color: #000000;
-    font-size: 20px;
+    /* font-size: 20px; */
     outline: none;
-    width: 280px;
-    /* height: 40px; */
+    width: 90%;
+    
 }
 
 .dropdown_edit:hover,.dropdown_edit:focus {
@@ -131,23 +85,18 @@ body,a {
     border: 1px #ffffff solid;
     border-radius: 5px;
     background-color: #111;
-    /* position: absolute; */
-    top: 40px;
+        top: 40px;
     left: 0;
-    /* min-width: 100%; */
     width: 100%;
-    /* Занимает всю ширину родителя */
     max-height: 300px;
     z-index: 10;
-    /* Располагает overlay поверх других элементов */
     overflow-y: auto;
-    /* Вертикальная прокрутка */
     overflow-x: hidden;
-    /* Отключение горизонтальной прокрутки */
+     border: 1px #5ce300 dotted;
 }
 
 .dropdown_list div {
-    /* border: 1px #5ce300 dotted; */
+   
     height: 24px;
     padding-left: 5px;
     padding-top: 10px;
@@ -170,30 +119,10 @@ span.region {
     /* font-style:italic; */
 }
 
-/*
-PAGE SPECIFIC
-
-*/
-.hdr1 {
-    color: #f1f1f1;
-    font-size: xxx-large;
-    font-weight: bolder;
-    /* text-shadow: rgba(230,230,230,0.9) 0px 0px 2px; */
-}
-
-.hdr2 {
-    color: #f1f1f1;
-    font-size: xx-large;
-    font-weight: bolder;
-    /* text-shadow: rgba(230,230,230,0.9) 0px 0px 2px; */
-}
-
 .footer {
     position: fixed;
     left: 0px;
     right: 0px;
-    bottom: 0px;
-    height: 32px;
     /* border: 1px #00BCD4 solid; */
     display: flex;
     flex-direction: row;
@@ -203,23 +132,156 @@ PAGE SPECIFIC
     align-content: center;
 }
 
-.footer div {
-    /* border: 1px #ffed00 solid; */
-    padding: 0px 20px;
-}
-
 a:link,a:visited,a:hover,a:active {
     text-decoration: none;
-    /* font-weight: 200; */
-    /* font-size:smaller; */
-}
-
-#messenger_icons {
-    padding-top: 30px;
 }
 
 body {
     /* border: 1px #ffed00 solid; */
-    width: 1000px;
-    margin: auto;
+    /* width: 1000px; */
+    /* margin: auto; */
+}
+
+#lang {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: stretch;
+}
+
+/*********************
+PHONE 
+**********************/
+@media (max-width: 768px) {
+    body {
+        border: 1px #ffed00 solid;
+    }
+
+    .hdr1 {
+        color: #f1f1f1;
+        font-size: 2.5em;
+        font-weight: bolder;
+    }
+
+    .hdr2 {
+        color: #f1f1f1;
+        font-size: 1.8em;
+        font-weight: bolder;
+    }
+
+    .flexinputs {
+        border: 1px solid red;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: center;
+        align-items: flex-end;
+        justify-content: flex-start;
+    }
+
+    .dropdown_box {
+        border: 1px dashed #f700ff;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+        padding: 10px;
+    }
+
+    #lang {
+        flex-direction: column;
+    }
+
+    .fntsmall {
+        font-size: 1.4em;
+        font-weight: 200 ;
+    }
+
+    .footer {
+        font-size: 0.7em;
+        font-weight: 200 ;
+        bottom: 5px;
+    }
+
+    .footer div {
+        border: 1px #ffed00 solid;
+        padding: 0px 10px;
+    }
+
+    .dropdown_edit {
+        font-size: 1.3em;
+    }
+}
+
+/*********************
+desktop
+**********************/
+@media (min-width: 768px) {
+    body {
+        border: 1px #00ea06 solid;
+    }
+
+    .hdr1 {
+        color: #f1f1f1;
+        font-size: 60px;
+        font-weight: 600;
+        /* text-shadow: rgba(230,230,230,0.9) 0px 0px 2px; */
+    }
+
+    .hdr2 {
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: 600;
+        /* text-shadow: rgba(230,230,230,0.9) 0px 0px 2px; */
+    }
+
+    .flexinputs {
+        border: 1px solid red;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dropdown_box {
+        /* border: 2px dashed #ff0000; */
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+        padding: 50px;
+    }
+
+    #lang {
+        flex-direction: row;
+    }
+
+    .fntsmall {
+        /* font-size: 1.4em; */
+        /* font-weight: 200; */
+    }
+
+    .footer {
+        height: 32px;
+        bottom: 0px;
+        border: 1px #2900ff solid;
+    }
+
+    .footer div {
+         font-size: 16px;
+        border: 1px #ffed00 solid;
+        padding: 0px 50px;
+    }
+    .pt
+    {padding-top:20px;}
 }

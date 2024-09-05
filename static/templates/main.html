@@ -1,16 +1,29 @@
 <!doctype html>
-<html lang="{{ page_lang }}">
+
 <html>
 
 <head>
   <meta charset="UTF-8">
   <title data-lang="page_title">page_title</title>
-  <link href="../css/main.css" rel="stylesheet" type="text/css">
+
+
   <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="../js/main.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../css/main.css" rel="stylesheet" type="text/css">
+  <!-- <link rel="stylesheet" href="css/main.css"> -->
+  <!-- <link rel="stylesheet" media="screen and (min-width: 600px)" href="../css/pc.css"> -->
+  <!-- <link rel="stylesheet" media="screen and (max-width: 600px)" href="../css/phone.css"> -->
+
+
 </head>
 
 <body>
@@ -20,7 +33,7 @@
 
   <div id="lang"> {% for lang in languages %} <img src="../img/lang{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="24" height="24" alt="{{ lang.abbr }}" /> {% endfor %} </div>
 
-  <div data-lang="descr" class="fntsmall">descr</div>
+  <div data-lang="descr" class="fntsmall pt">descr</div>
   <div class="flexinputs">
     <div class="dropdown_box">
       <label for="city1" data-lang="city_from">city_from</label>
@@ -38,14 +51,14 @@
     </div>
   </div>
   <!-- Calculations: -->
-  <div id="calculations"  class="fntsmall" ></div>
+  <div id="calculations" class="fntsmall"></div>
   <span data-lang="phone_no" class="hdr1">040 222 33 44</span>
   <!-- <div id='dbg'>debug</div> -->
-  <div id="messenger_icons" class="fntsmall"  data-lang="phone_descr">
+  <div class="fntsmall" data-lang="phone_descr">
     <!-- <img src="../img/whats.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/tg.png" width="24" height="24" alt="Telegram" />    <img src="../img/viber.png" width="24" height="24" alt="Viber" />    <img src="../img/call.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/sms.png" width="24" height="24" alt="SMS" />   -->
     Call / SMS / WhatsApp / Telegram / Viber
   </div>
-  <img src="../img/karry.png" width="396" height="225" alt=""/>
+  <img src="../img/karry.png" width="396" height="225" alt="" />
   <div class="footer fntsmall">
     <div>Saatavilla Kuljetus Oy</div>
     <div>Y-tunnus: 3472299-2</div>
