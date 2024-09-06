@@ -1,10 +1,11 @@
 body {
-    background-color: #111;
+   
     /* margin: 0; */
-    margin: 0px 500px;
+   
     text-align: center;
 }
-
+body,.footer
+{ background-color: #111;}
 body,input,html {
     font-family: "Roboto Condensed", sans-serif;
     
@@ -17,7 +18,7 @@ body,html {
 input,.dropdown_list div
 {
     font-weight: 400;
-    font-size: 24px;
+    font-size: 20px;
 }
 body,a {
     color: #eee;
@@ -42,17 +43,21 @@ body,a {
 }
 
 #lang img {
-    opacity: 0.3;
+    opacity: 0.1;
+   /* filter: grayscale(100%); */
     cursor: pointer;
+    padding-left:1px;
 }
 
-#lang img.selected {
-    opacity: 1;
-}
 
 #lang img:hover {
-    opacity: 1;
+    opacity: 0.7;
     transition: all 0.3s ease-out;
+     /* filter: grayscale(0%); */
+}
+#lang img.selected {
+     filter: grayscale(0%);
+    opacity: 1;
 }
 
 .dropdown_box label {
@@ -62,7 +67,8 @@ body,a {
 .dropdown_cont {
     position: relative;
     width: 300px;
-    height: 50px; border: 1px #3400e3 dotted;
+    height: 50px; 
+    /* border: 1px #3400e3 dotted; */
 }
 
 .dropdown_edit {
@@ -82,7 +88,7 @@ body,a {
 }
 
 .dropdown_list {
-    border: 1px #ffffff solid;
+    border: 1px #aaa solid;
     border-radius: 5px;
     background-color: #111;
         top: 40px;
@@ -92,7 +98,7 @@ body,a {
     z-index: 10;
     overflow-y: auto;
     overflow-x: hidden;
-     border: 1px #5ce300 dotted;
+     /* border: 1px #5ce300 dotted; */
 }
 
 .dropdown_list div {
@@ -114,7 +120,7 @@ body,a {
 
 span.region {
     color: #414141;
-    font-size: smaller;
+    font-size: 16px;
     padding-left: 6px;
     /* font-style:italic; */
 }
@@ -174,7 +180,7 @@ PHONE
     }
 
     .flexinputs {
-        border: 1px solid red;
+        /* border: 1px solid red; */
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
@@ -184,7 +190,7 @@ PHONE
     }
 
     .dropdown_box {
-        border: 1px dashed #f700ff;
+        /* border: 1px dashed #f700ff; */
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -210,7 +216,7 @@ PHONE
     }
 
     .footer div {
-        border: 1px #ffed00 solid;
+        /* border: 1px #ffed00 solid; */
         padding: 0px 10px;
     }
 
@@ -224,7 +230,9 @@ desktop
 **********************/
 @media (min-width: 768px) {
     body {
-        border: 1px #00ea06 solid;
+        /* border: 1px #00ea06 solid; */
+        margin: auto;
+        max-width:900px;
     }
 
     .hdr1 {
@@ -242,7 +250,7 @@ desktop
     }
 
     .flexinputs {
-        border: 1px solid red;
+        /* border: 1px solid red; */
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -274,14 +282,16 @@ desktop
     .footer {
         height: 32px;
         bottom: 0px;
-        border: 1px #2900ff solid;
+        /* border: 1px #2900ff solid; */
     }
 
     .footer div {
          font-size: 16px;
-        border: 1px #ffed00 solid;
+        /* border: 1px #ffed00 solid; */
         padding: 0px 50px;
     }
     .pt
     {padding-top:20px;}
+     .pt2
+    {padding-top:80px;}
 }

@@ -38,10 +38,12 @@ def main():
     return render_template("main.html", languages=languages)
 
 
-def city_input(params: dict, cityname: str, elem: str) -> dict:
+def city_input(params: dict, cityname: str, elem: str, sender: int) -> dict:
+    show = sender != SENDER_INIT
 
-    search_cityname = cityname.strip().lower()
-    show = len(search_cityname) > 0
+    if show:
+        search_cityname = cityname.strip().lower()
+        show = len(search_cityname) > 0
 
     if show:  # check exact name
         search = internal.read_db("cityexact.sql", {"cityname": search_cityname})
@@ -74,9 +76,9 @@ def parse_data():
     if sender in [SENDER_CITY2]:
         result["data"].update({"city2": data["city2"]})
     if sender in [SENDER_CITY1, SENDER_INIT]:
-        result = city_input(result, data["city1"], "#city1_dd")
+        result = city_input(result, data["city1"], "#city1_dd", sender)
     if sender in [SENDER_CITY2, SENDER_INIT]:
-        result = city_input(result, data["city2"], "#city2_dd")
+        result = city_input(result, data["city2"], "#city2_dd", sender)
     if sender in [SENDER_LANG, SENDER_INIT]:
         result = update_lang(result, data["lang"])
 
@@ -111,7 +113,7 @@ def parse_data():
         dist_res = internal.read_db("citydist.sql", {"city1": city1_res[0]["city_id"], "city2": city2_res[0]["city_id"]})
         dist = round(dist_res[0]["dist"] / 1000)
     # if len(dist):
-    msg = msg.format(city1 = city1_name,city2 = city2_name, dist = dist,price = round(dist*1.3))
+    msg = msg.format(city1=city1_name, city2=city2_name, dist=dist, price=round(dist * 1.3))
     result["dom"].append({"selector": "#calculations", "html": msg})
 
     return jsonify(result)
