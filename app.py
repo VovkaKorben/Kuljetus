@@ -88,7 +88,7 @@ def parse_data():
     if len(city1):
         city1_res = internal.read_db("citydist_prepare.sql", {"city_name": city1.lower()})
         if len(city1_res) == 1:
-            mode |= 0x02  # city1 OK
+            mode |= 0x02  # city1 OKзн
             city1_name = city1_res[0]["city_name"]
         else:
             mode |= 0x01  # city1 search error

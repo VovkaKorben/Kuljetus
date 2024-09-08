@@ -6,59 +6,69 @@
   <meta charset="UTF-8">
   <title data-lang="page_title">page_title</title>
 
-
-  <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
-  <script type="text/javascript" src="../js/main.js"></script>
-
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-
-
-  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="../css/main.css" rel="stylesheet" type="text/css">
-  <!-- <link rel="stylesheet" href="css/main.css"> -->
-  <!-- <link rel="stylesheet" media="screen and (min-width: 600px)" href="../css/pc.css"> -->
-  <!-- <link rel="stylesheet" media="screen and (max-width: 600px)" href="../css/phone.css"> -->
-
-
+  <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <div data-lang="page_header_1" class="hdr1">page_header1</div>
-
-  <div data-lang="page_header_2" class="hdr2">page_header2</div>
-
   <div id="lang"> {% for lang in languages %} <img src="../img/ln{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="34" height="21" alt="{{ lang.abbr }}" /> {% endfor %} </div>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tbody>
+      <tr>
+        <td colspan="2" data-lang="page_header_1" class="hdr1">1</td>
+      </tr>
+      <tr>
+        <td colspan="2" data-lang="page_header_2" class="hdr2">2</td>
+      </tr>
+      <tr>
+        <td colspan="2" class="small_block pc" data-lang="descr">333</td>
+      </tr>
 
-  <div data-lang="descr" class="fntsmall pt">descr</div>
-  <div class="flexinputs">
-    <div class="dropdown_box">
-      <label for="city1" data-lang="city_from">city_from</label>
-      <div class="dropdown_cont">
-        <input type="text" name="city1" id="city1" class="dropdown_edit" data-id="1" value="ha">
-        <div id='city1_dd' class="dropdown_list dropdown_hide">city1_dd</div>
-      </div>
-    </div>
-    <div class="dropdown_box">
-      <label for="city2" data-lang="city_to">city_to</label>
-      <div class="dropdown_cont">
-        <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
-        <div id='city2_dd' class="dropdown_list dropdown_hide">city2_dd</div>
-      </div>
-    </div>
-  </div>
-  <!-- Calculations: -->
-  <div id="calculations" class=""></div>
-  <div data-lang="phone_no" class="hdr1 pt">040 222 33 44</div>
-  <!-- <div id='dbg'>debug</div> -->
-  <div data-lang="phone_descr">
-    <!-- <img src="../img/whats.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/tg.png" width="24" height="24" alt="Telegram" />    <img src="../img/viber.png" width="24" height="24" alt="Viber" />    <img src="../img/call.png" width="24" height="24" alt="WhatsApp" />    <img src="../img/sms.png" width="24" height="24" alt="SMS" />   -->
-    Call / SMS / WhatsApp / Telegram / Viber
-  </div>
-  <img src="../img/karry.png" width="396" height="225" alt="" />
+      <tr>
+        <td>
+          <div class="city_edits">
+            <!-- edit 1 -->
+            <div class="dropdown_box">
+              <div data-lang="city_from" class="city_label ar pr">city_from</div>
+              <div class="dropdown_cont">
+                <input type="text" name="city1" id="city1" class="dropdown_edit" data-id="1">
+                <div id='city1_dd' class="dropdown_list dropdown_hide">city1_dd</div>
+              </div>
+            </div>
+            <!-- edit 2 -->
+            <div class="dropdown_box">
+              <div data-lang="city_to" class="city_label ar pr">city_from</div>
+              <div class="dropdown_cont">
+                <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
+                <div id='city2_dd' class="dropdown_list dropdown_hide">city2_dd</div>
+              </div>
+            </div>
+
+          </div>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td colspan="2" class="small_block pc" id="calculations">6</td>
+      </tr>
+      <tr>
+        <td colspan="2" data-lang="phone_no" class="hdr1">&nbsp;</td>
+      </tr>
+      <tr>
+        <td colspan="2" data-lang="phone_descr">&nbsp;</td>
+      </tr>
+      <tr>
+        <td colspan="2"> <img src="../img/karry.png" class="karry" alt="" /></td>
+      </tr>
+    </tbody>
+  </table>
   <div class="footer fntsmall">
     <div>Saatavilla Kuljetus Oy</div>
     <div>Y-tunnus: 3472299-2</div>

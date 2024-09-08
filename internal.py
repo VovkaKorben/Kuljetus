@@ -11,10 +11,10 @@ import os
 from flask import Flask, jsonify, request, g
 
 
-
 debug = False
 # debug = True
 app = Flask(__name__, static_url_path="", static_folder="static", template_folder="static/templates")
+
 
 class SafeDictUpdater(dict):
     def update_safe(self, new_data):
@@ -38,6 +38,7 @@ class SafeDictUpdater(dict):
                 raise TypeError(f"Expected dict, got {type(arg).__name__}")
         if kwargs:
             self.update_safe(kwargs)
+
 
 class db_error(Exception):
     """Base class for other exceptions"""
@@ -104,7 +105,8 @@ def read_db_nofile(sql_query, params, raw=False):
 
 
 def read_sql_file(sqlfilename):
-    sqlpath = "static/sql/" + sqlfilename
+    sqlpath = os.path.join(app.root_path, "static", "sql", sqlfilename)
+    # sqlpath = "static/sql/" + sqlfilename
     if not os.path.isfile(sqlpath):
         raise db_error(f"Error in <b>read_db2</b>\nQuery <b>{sqlfilename}</b> not exists!")
     try:
@@ -119,7 +121,8 @@ def read_sql_file(sqlfilename):
 
 
 def read_db(sqlfilename, params={}):  # for select sql
-    sqlpath = "static/sql/" + sqlfilename
+    # sqlpath = "static/sql/" + sqlfilename
+    sqlpath = os.path.join(app.root_path, "static", "sql", sqlfilename)
     if not os.path.isfile(sqlpath):
         raise db_error(f"Error while fetching DB\nQuery {sqlfilename} not exists!")
 
@@ -166,7 +169,6 @@ def make_raw(cursor, row):
     return row[0]
 
 
-
 def db_conn():
     if "db" not in g:
         try:
@@ -186,4 +188,3 @@ def teardown_db(exception):
 
     if db is not None:
         db.close()
-

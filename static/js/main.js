@@ -103,20 +103,24 @@ $(document).ready(function() {
     }).on('blur', function() {// this dont work!!  $(this).next('.dropdown_list').addClass("dropdown_hide");
 
     }).on('keydown', function(e) {
-        let list = $(this).next('.dropdown_list');
+        let list = $(this).next('.dropdown_list')[0];
         // exit, if dropdown list not visible
-        if (!$(list).hasClass('dropdown_hide'))
+        let hided = $(list).hasClass('dropdown_hide');
+        if (hided)
             return;
 
         let handled = true;
 
-        let items = list.children();
+        let items =$( list).children();
         // get current selection 
-        let sel_index = list.find('.selected').index();
+        let sel_index =$( list).find('.selected').index();
         let items_count = items.length;
 
         switch (event.keyCode) {
-
+            case 27: // Esc
+                 $(list).addClass('dropdown_hide');
+                $(this).blur();
+                break;
         case 38:
             // arrow up
             sel_index--;
@@ -134,7 +138,8 @@ $(document).ready(function() {
             // enter
             // if (sel_index >= 0 && sel_index < items_count) {
             let selected = items.eq(sel_index);
-            apply_city(selected);
+            $(this).blur();
+                apply_city(selected);
 
             break;
         default:
@@ -142,9 +147,9 @@ $(document).ready(function() {
         }
         if (handled) {
 
-            items.removeClass('selected');
+            $(items).removeClass('selected');
             let selected = items.eq(sel_index);
-            selected.addClass('selected');
+            $(selected).addClass('selected');
 
             event.preventDefault();
         }
@@ -178,12 +183,12 @@ $(document).ready(function() {
             current_dd = current_dd[0]
         $('div.dropdown_cont').each(function() {
             if (this == current_dd) {
-                console.log('in edit');
+                // console.log('in edit');
                  // event.preventDefault();
                 // return false;
             } else {
                 $(this).children('.dropdown_list').addClass('dropdown_hide');
-                console.log(this + 'hided');
+                // console.log(this + 'hided');
             }
 
         });
