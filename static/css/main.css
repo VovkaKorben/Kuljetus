@@ -1,12 +1,21 @@
-body,.footer {
+body,
+.footer {
     background-color: #111;
 }
-body{text-align:center;}
-body,input,html,td {
+
+body {
+    text-align: center;
+}
+
+body,
+input,
+html,
+td {
     font-family: "Roboto Condensed", sans-serif;
 }
 
-body,a {
+body,
+a {
     color: #eee;
 }
 
@@ -28,7 +37,11 @@ td {
 .pr {
     padding-right: 10px;
 }
-.pc{ padding: 0px 40px;}
+
+.pc {
+    padding: 0px 40px;
+}
+
 #lang {
     position: absolute;
     right: 5px;
@@ -73,7 +86,9 @@ td {
     font-weight: 200;
 }
 
-a:link,a:visited,a:active {
+a:link,
+a:visited,
+a:active {
     text-decoration: none;
 }
 
@@ -84,12 +99,12 @@ a:hover {
 .city_edits {
     display: flex;
     /* justify-content: space-around; */
-    
+
     flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: center;
-	align-items: center;
-	align-content: stretch;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
 }
 
 .dropdown_box {
@@ -99,7 +114,7 @@ a:hover {
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    margin:3px;
+    margin: 3px;
 }
 
 .dropdown_cont {
@@ -108,11 +123,13 @@ a:hover {
     /* border: 1px #4ae300 dotted; */
 }
 
-.dropdown_list,.dropdown_edit {
+.dropdown_list,
+.dropdown_edit {
     /* width: 100%; */
 }
 
-.dropdown_list div,.dropdown_edit {
+.dropdown_list div,
+.dropdown_edit {
     padding: 7px 10px;
     font-weight: 400;
 }
@@ -161,7 +178,10 @@ span.region {
 desktop
 **********************/
 @media (min-width: 768px) {
-    body,html,input {
+
+    body,
+    html,
+    input {
         font-weight: 200;
         font-size: 18px;
     }
@@ -169,23 +189,25 @@ desktop
     body {
         /* max-width: 900px; */
     }
-table {
-    /* align-self:fullscreen; */
-    margin: 0px auto;
-    width:700px;
-    min-width:600px;
-    max-width:800px;
-}
+
+    table {
+        /* align-self:fullscreen; */
+        margin: 0px auto;
+        width: 700px;
+        min-width: 600px;
+        max-width: 800px;
+    }
+
     td.small_block {
         height: 120px;
     }
 
-    .hdr1 {
+    .size_bigger {
         font-size: 60px;
         font-weight: 600;
     }
 
-    .hdr2 {
+    .size_big {
         font-size: 40px;
         font-weight: 500;
     }
@@ -216,16 +238,21 @@ table {
 PHONE 
 **********************/
 @media (max-width: 768px) {
-    body,html,input {
+
+    body,
+    html,
+    input {
         font-weight: 200;
         font-size: 12px;
     }
-table {
-    /* align-self:fullscreen; */
-   margin: 8px 10px;
-   /* width:100%; */
-   
-}
+
+    table {
+        /* align-self:fullscreen; */
+        margin: 8px 10px;
+        /* width:100%; */
+
+    }
+
     td.small_block {
         height: 80px;
     }
@@ -266,17 +293,26 @@ table {
     }
 }
 
-/*********************
-DEBUG
-**********************/
 table {
     border-collapse: collapse;
 }
 
-td {
-    /* border: 1px solid #faff0030; */
+.content
+{width: 60%;}
+.edit_block {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
 }
 
-.dropdown_cont {
-    /* border: 1px #00ea06 solid; */
+.edit_line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
 }

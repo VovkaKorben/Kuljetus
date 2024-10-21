@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <title data-lang="page_title">page_title</title>
-
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,21 +13,86 @@
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/debug.css') }}" rel="stylesheet" type="text/css">
+  <link href="../css/debug.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
   <div id="lang"> {% for lang in languages %} <img src="../img/ln{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="34" height="21" alt="{{ lang.abbr }}" /> {% endfor %} </div>
+
+
+  <div class="content">
+    <div class="size_bigger">cargo</div>
+    <div class="size_big">finland</div>
+    <div class="text_block">description</div>
+    <div class="size_big">application</div>
+    <div class="edit_line">
+      <div class="edit_block">name</div><input type="text"></div>
+      <div class="edit_block">phone</div><input type="text"></div>
+    </div>
+    <div class="edit_line">
+      <div class="edit_block">date</div><input type="text"></div>
+      <div class="edit_block">time</div><input type="text"></div>
+    </div>
+    <div class="edit_line">
+      <div class="edit_block">from</div><input type="text"></div>
+      <div class="edit_block">to</div><input type="text"></div>
+    </div>
+    <div class="edit_memo"></div>
+    <div class="div7">disclaimer</div>
+    <div class="div8">phone</div>
+    <div class="div9">adv</div>
+
+  </div>
+
+
+
   <table border="0" cellspacing="0" cellpadding="0">
     <tbody>
+      <!-- headers -->
       <tr>
-        <td colspan="2" data-lang="page_header_1" class="hdr1">1</td>
+        <td colspan="2" data-lang="page_header_1" class="size_bigger">1</td>
       </tr>
       <tr>
-        <td colspan="2" data-lang="page_header_2" class="hdr2">2</td>
+        <td colspan="2" data-lang="page_header_2" class="size_big">2</td>
       </tr>
+      <!-- enterprise description -->
       <tr>
         <td colspan="2" class="small_block pc" data-lang="descr">333</td>
       </tr>
+
+      <tr>
+        <td class="size_big">
+          Оставить заявку
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <div>
+            <div class="">
+              Имя <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
+            </div>
+            <div>
+              Телефон
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <div>
+            <div>
+              Дата
+            </div>
+            <div>
+
+            </div>
+          </div>
+        </td>
+      </tr>
+
 
       <tr>
         <td>
@@ -49,12 +113,9 @@
                 <div id='city2_dd' class="dropdown_list dropdown_hide">city2_dd</div>
               </div>
             </div>
-
           </div>
         </td>
       </tr>
-
-
       <tr>
         <td colspan="2" class="small_block pc" id="calculations">6</td>
       </tr>
@@ -65,7 +126,7 @@
         <td colspan="2" data-lang="phone_descr">&nbsp;</td>
       </tr>
       <tr>
-        <td colspan="2"> <img src="../img/karry.png" class="karry" alt="" /></td>
+        <td colspan="2"><img src="../img/karry.png" class="karry" alt="" /></td>
       </tr>
     </tbody>
   </table>

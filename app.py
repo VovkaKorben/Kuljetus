@@ -17,7 +17,7 @@ def update_lang(params: dict, lang: int):
     params["data"].update({"lang": lang})
     # result["data"].update({"city2": data["city2"]})
 
-    langs = internal.read_db("lang.sql")
+    langs = internal.read_db(sql_filename="lang.sql")
     for id in langs:
         params["dom"].append(
             {
@@ -26,15 +26,17 @@ def update_lang(params: dict, lang: int):
             }
         )
 
-    transl = internal.read_db("translation.sql", {"lang": lang})
+    transl = internal.read_db(sql_filename="translation.sql",params= {"lang": lang})
     for i in transl:
-        params["dom"].append({"selector": f"[data-lang='{i['dom']}']", "html": i["translation"]})
+        params["dom"].append(
+            {"selector": f"[data-lang='{i['dom']}']", "html": i["translation"]}
+        )
     return params
 
 
 @app.route("/")
 def main():
-    languages = internal.read_db("lang.sql")
+    languages = internal.read_db(sql_filename="lang.sql")
     return render_template("main.html", languages=languages)
 
 
@@ -46,19 +48,25 @@ def city_input(params: dict, cityname: str, elem: str, sender: int) -> dict:
         show = len(search_cityname) > 0
 
     if show:  # check exact name
-        search = internal.read_db("cityexact.sql", {"cityname": search_cityname})
+        search = internal.read_db(
+          sql_filename=  "cityexact.sql",params= {"cityname": search_cityname}
+        )
         if len(search) == 1:
             show = False
 
     if show:  # check variants
-        search = internal.read_db("citysearch.sql", {"cityname": search_cityname})
+        search = internal.read_db(
+           sql_filename= "citysearch.sql",params= {"cityname": search_cityname}
+        )
         show = len(search) > 0
 
     if show:
         html = ""
         for i in search:
             html += f"<div data-cityid={ i['city_id'] } class='flex_lc'><span data-text>{i['city_name']}</span><span class='region'>{i['region_name']}</span></div>"
-        params["dom"].append({"selector": elem, "html": html, "css_remove": ["dropdown_hide"]})
+        params["dom"].append(
+            {"selector": elem, "html": html, "css_remove": ["dropdown_hide"]}
+        )
 
     if not show:
         params["dom"].append({"selector": elem, "css_add": ["dropdown_hide"]})
@@ -86,7 +94,9 @@ def parse_data():
     mode, city1_name, city2_name, dist = 0, "", "", 0
     city1 = data["city1"].strip()
     if len(city1):
-        city1_res = internal.read_db("citydist_prepare.sql", {"city_name": city1.lower()})
+        city1_res = internal.read_db(
+           sql_filename= "citydist_prepare.sql", params={"city_name": city1.lower()}
+        )
         if len(city1_res) == 1:
             mode |= 0x02  # city1 OKзн
             city1_name = city1_res[0]["city_name"]
@@ -96,7 +106,9 @@ def parse_data():
 
     city2 = data["city2"].strip()
     if len(city2):
-        city2_res = internal.read_db("citydist_prepare.sql", {"city_name": city2.lower()})
+        city2_res = internal.read_db(
+          sql_filename=  "citydist_prepare.sql",params= {"city_name": city2.lower()}
+        )
         if len(city2_res) == 1:
             mode |= 0x08  # city2 OK
             city2_name = city2_res[0]["city_name"]
@@ -105,15 +117,27 @@ def parse_data():
             city2_name = city2
 
     # convert bits to msg index
-    mode = [1, 2, 1, 0, 3, 4, 3, 0, 1, 2, 5, 0, 0, 0, 0, 0][mode]  # 0  error 1	intro   2	c1 not found    3	c2 not found    4	c1/c2 not found 5	OK
+    mode = [1, 2, 1, 0, 3, 4, 3, 0, 1, 2, 5, 0, 0, 0, 0, 0][
+        mode
+    ]  # 0  error 1	intro   2	c1 not found    3	c2 not found    4	c1/c2 not found 5	OK
     # get message from table
-    msg = internal.read_db("citydist_message.sql", {"mode": mode, "lang": data["lang"]})
+    msg = internal.read_db(
+        sql_filename="citydist_message.sql", params={"mode": mode, "lang": data["lang"]}
+    )
     msg = msg[0]["translation"]
     if mode == 5:
-        dist_res = internal.read_db("citydist.sql", {"city1": city1_res[0]["city_id"], "city2": city2_res[0]["city_id"]})
+        dist_res = internal.read_db(
+            "citydist.sql",
+            {
+                "city1": city1_res[0]["city_id"],
+                "city2": city2_res[0]["city_id"],
+            },
+        )
         dist = round(dist_res[0]["dist"] / 1000)
     # if len(dist):
-    msg = msg.format(city1=city1_name, city2=city2_name, dist=dist, price=round(dist * 1.3))
+    msg = msg.format(
+        city1=city1_name, city2=city2_name, dist=dist, price=round(dist * 1.3)
+    )
     result["dom"].append({"selector": "#calculations", "html": msg})
 
     return jsonify(result)
