@@ -1,8 +1,4 @@
-td {
-    border: 1px solid red;
-    /* border-radius: 10px; */
-}
-div {
-    border: 1px solid rgb(130, 217, 0);
-    /* border-radius: 10px; */
-}
+
+/* div {    border: 1px dotted rgb(130, 217, 0);    border-radius: 10px;} */
+.content > div{ border: 1px dotted rgb(217 0 0 / 32%);    border-radius: 10px;}
+.content > div>div{ border: 1px dotted rgb(0 217 51 / 76%);    border-radius: 10px;}

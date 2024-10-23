@@ -6,11 +6,15 @@
   <meta charset="UTF-8">
   <title data-lang="page_title">page_title</title>
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/storage.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/vcl.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type="text/css">
   <link href="{{ url_for('static', filename='css/debug.css') }}" rel="stylesheet" type="text/css">
@@ -19,117 +23,90 @@
 
 <body>
   <div id="lang"> {% for lang in languages %} <img src="../img/ln{{ loop.index0 }}.png" data-langid="{{ loop.index0 }}" width="34" height="21" alt="{{ lang.abbr }}" /> {% endfor %} </div>
+  <input type="date">
+  <div id="content">
+    <div id="hdr1" class="cell_info size_bigger">cargo</div>
+    <div id="hdr2" class="cell_info size_big">finland</div>
+
+    <div id="txt1" class="cell_text">Name</div>
+    <div id="inp1" class="cell_edit"><input type="text"></div>
+
+    <div id="txt2" class="cell_text">Phone</div>
+    <div id="inp2" class="cell_edit"><input type="text"></div>
+
+    <div id="txt3" class="cell_text">From</div>
+    <div id="txt4" class="cell_text">To</div>
+    <div id="txt5" class="cell_text">Message</div>
 
 
-  <div class="content">
-    <div class="size_bigger">cargo</div>
-    <div class="size_big">finland</div>
-    <div class="text_block">description</div>
-    <div class="size_big">application</div>
-    <div class="edit_line">
-      <div class="edit_block">name</div><input type="text"></div>
-      <div class="edit_block">phone</div><input type="text"></div>
-    </div>
-    <div class="edit_line">
-      <div class="edit_block">date</div><input type="text"></div>
-      <div class="edit_block">time</div><input type="text"></div>
-    </div>
-    <div class="edit_line">
-      <div class="edit_block">from</div><input type="text"></div>
-      <div class="edit_block">to</div><input type="text"></div>
-    </div>
-    <div class="edit_memo"></div>
-    <div class="div7">disclaimer</div>
-    <div class="div8">phone</div>
-    <div class="div9">adv</div>
 
+    <div id="inp3" class="cell_edit"><input type="text" data-init="{'handler':'parse_data','id':'city1'}"></div>
+    <div id="inp4" class="cell_edit"><input type="text" data-init="{'handler':'parse_data','id':'city2'}"></div>
+    <div id="tarea"><textarea></textarea></div>
+
+    <div id="btn" class="cell_info"><input type="button" value="Confirm application"></div>
   </div>
 
 
 
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tbody>
-      <!-- headers -->
-      <tr>
-        <td colspan="2" data-lang="page_header_1" class="size_bigger">1</td>
-      </tr>
-      <tr>
-        <td colspan="2" data-lang="page_header_2" class="size_big">2</td>
-      </tr>
-      <!-- enterprise description -->
-      <tr>
-        <td colspan="2" class="small_block pc" data-lang="descr">333</td>
-      </tr>
-
-      <tr>
-        <td class="size_big">
-          Оставить заявку
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <div>
-            <div class="">
-              Имя <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
-            </div>
-            <div>
-              Телефон
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <div>
-            <div>
-              Дата
-            </div>
-            <div>
-
-            </div>
-          </div>
-        </td>
-      </tr>
 
 
-      <tr>
-        <td>
-          <div class="city_edits">
-            <!-- edit 1 -->
-            <div class="dropdown_box">
+
+
+  <!-- 
+
+  <div class="content">
+    <div class="size_bigger">cargo</div>
+    <div
+    <div class="text_block">description</div>
+    <div class="size_big">application</div>
+    <div class="input_line">
+      <div class="edit_block">
+        <div>name</div><input type="text">
+      </div>
+      <div class="edit_block">
+        <div>phone</div><input type="text">
+      </div>
+    </div>
+
+    <div class="input_line">
+      <div class="edit_block">
+        <div>date</div><input type="text">
+      </div>
+      <div class="edit_block">
+        <div>time</div><input type="text">
+      </div>
+    </div>
+
+    <div class="input_line">
+      <div class="edit_block">
+        <div>from</div><input type="text">
+      </div>
+      <div class="edit_block">
+        <div>to</div><input type="text">
+      </div>
+    </div>
+
+    <div class="edit_block">
+      <div>info</div><textarea>12331</textarea>
+    </div>
+
+    <div>disclaimer</div>
+    <div><input type="button" value="send application"></div>
+    <div>phone</div>
+    <div>adv</div>
+
+
+  </div>
+-->
+
+  <!-- <div class="dropdown_box">
               <div data-lang="city_from" class="city_label ar pr">city_from</div>
               <div class="dropdown_cont">
                 <input type="text" name="city1" id="city1" class="dropdown_edit" data-id="1">
                 <div id='city1_dd' class="dropdown_list dropdown_hide">city1_dd</div>
               </div>
-            </div>
-            <!-- edit 2 -->
-            <div class="dropdown_box">
-              <div data-lang="city_to" class="city_label ar pr">city_from</div>
-              <div class="dropdown_cont">
-                <input type="text" name="city2" id="city2" class="dropdown_edit" data-id="2">
-                <div id='city2_dd' class="dropdown_list dropdown_hide">city2_dd</div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" class="small_block pc" id="calculations">6</td>
-      </tr>
-      <tr>
-        <td colspan="2" data-lang="phone_no" class="hdr1">&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2" data-lang="phone_descr">&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2"><img src="../img/karry.png" class="karry" alt="" /></td>
-      </tr>
-    </tbody>
-  </table>
+            </div> -->
   <div class="footer fntsmall">
     <div>Saatavilla Kuljetus Oy</div>
     <div>Y-tunnus: 3472299-2</div>

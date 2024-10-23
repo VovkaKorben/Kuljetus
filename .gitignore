@@ -6,3 +6,5 @@
 /dist
 parse_city.py
 parse_dist.py
+sqlite3.log
+!todo.txt
