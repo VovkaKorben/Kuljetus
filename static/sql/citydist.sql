@@ -1,1 +1,0 @@
-select * from dist where city1 = :city1 and city2 = :city2

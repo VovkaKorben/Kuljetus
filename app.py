@@ -9,13 +9,6 @@ from flask import Flask, jsonify, request, session, render_template
 import inspect
 
 
-def is_function_available(func_name):
-    for name, obj in globals().items():
-        if name == func_name and inspect.isfunction(obj):
-            return True
-    return False
-
-
 def phone_ok(phone_no: str) -> bool:
     collected = ""
     for c in phone_no:
@@ -132,6 +125,12 @@ def city_input(params: dict, value: str, sender: str) -> dict:
 
 def sendapp(params: dict, input_data: dict) -> dict:
 
+    def is_function_available(func_name):
+        for name, obj in globals().items():
+            if name == func_name and inspect.isfunction(obj):
+                return True
+        return False
+
     # {'username': '', 'userphone': '', 'city1': '', 'city2': '', 'usermessage': '', 'sender': 'sendapp'}
     # на входе у нас так же есть lang_id
     # на выход мы отдаем сообщение об ошибке сразу переведенное
@@ -165,7 +164,32 @@ def sendapp(params: dict, input_data: dict) -> dict:
 
     if err is None:
         # no errors, save to DB
-        pass
+        # прячем все поля кроме city1 city2
+        for f in fields:
+            if f["id"] not in ["city1", "city2"]:
+                params["dom"].append(
+                    {
+                        "selector": f"#{f['id']}",
+                        "css_add": ["hide"],
+                    }
+                )
+        # кнопку тоже прячем
+        params["dom"].append(
+            {
+                "selector": "#sendapp",
+                "css_add": ["hide"],
+            }
+        )
+        # показываем сообщение об отправке
+        params["dom"].append(
+            {
+                "selector": "#senddone",
+                "css_remove": ["hide"],
+                "html": "app send done",
+            }
+        )
+        # стираем все поля из localstorage
+        
     else:
         # читаем сообщение об ошибке из базы
         msg = read_db(

@@ -10,7 +10,7 @@ function parse_answer(result) {
             // do something with `item` (or `this` is also `item` if you like)
             let elem = $(item.selector);
             
-            console.log(JSON.stringify(item, null, 2));
+            // console.log(JSON.stringify(item, null, 2));
             if (elem.length > 0) {
 
                 if ('html'in item)
@@ -104,7 +104,7 @@ $(document).ready(function() {
     });
 
     
-    $('#sendapp').trigger('click');
+    // $('#sendapp').trigger('click');
     
     // city_input_changed($('#city2_input'));    $('#city2_input').focus();
 });

@@ -6,7 +6,7 @@ function apply_city(elem) {
     $(input).val(txt.innerText);
 
     let wrapper = $(input).parents('.wrapper');
-let field_name = $(wrapper).attr('id');
+    let field_name = $(wrapper).attr('id');
     save_storage(field_name, txt.innerText);
 
     $(dropdown_list).addClass('hide');
@@ -35,34 +35,34 @@ function city_input_keydown(input, event) {
     let items_count = items.length;
 
     switch (event.keyCode) {
-    case 27:
-        // Esc
-        $(dropdown_list).addClass('hide');
-        $(el).blur();
-        break;
-    case 38:
-        // arrow up
-        sel_index--;
-        if (sel_index < 0)
-            sel_index = items_count - 1;
-        break;
-    case 40:
-        // arrow down
-        sel_index++;
-        if (sel_index >= items_count)
-            sel_index = 0;
-        break;
+        case 27:
+            // Esc
+            $(dropdown_list).addClass('hide');
+            $(el).blur();
+            break;
+        case 38:
+            // arrow up
+            sel_index--;
+            if (sel_index < 0)
+                sel_index = items_count - 1;
+            break;
+        case 40:
+            // arrow down
+            sel_index++;
+            if (sel_index >= items_count)
+                sel_index = 0;
+            break;
 
-    case 13:
-        // enter
-        // if (sel_index >= 0 && sel_index < items_count) {
-        let selected = items.eq(sel_index);
-        $(input).blur();
-        apply_city(selected);
+        case 13:
+            // enter
+            // if (sel_index >= 0 && sel_index < items_count) {
+            let selected = items.eq(sel_index);
+            $(input).blur();
+            apply_city(selected);
 
-        break;
-    default:
-        handled = false;
+            break;
+        default:
+            handled = false;
     }
     if (handled) {
 
@@ -87,27 +87,27 @@ function init_vcl() {
     //
     // DROPDOWN handlers
     // 
-    $('[data-type="dropdown"] input').on('input', function() {
+    $('[data-type="dropdown"] input').on('input', function () {
         city_input_changed(this);
-    }).on('focus', function() {  
+    }).on('focus', function () {
         // city_input_changed(this);
-    }).on('keydown', function(e) {
+    }).on('keydown', function (e) {
         city_input_keydown(this, e);
     });
 
-    $('.dropdown_list').on("mouseover", 'div', function() {
+    $('.dropdown_list').on("mouseover", 'div', function () {
         // console.log( $( this ).text() );
         $(this).parent().children().removeClass('selected');
         $(this).addClass('selected');
-    }).on("click", 'div', function() {
+    }).on("click", 'div', function () {
         apply_city(this);
 
     });
 
- //
+    //
     // DROPDOWN off click
     // 
-    $('body,html').click(function(event) {
+    $('body,html').click(function (event) {
         // look if we move out from somekind dropdown
         // находим родительскую ближайшую область dropdown_cont
         let current_dd = $(event.target).closest('.dropdown');
@@ -115,11 +115,11 @@ function init_vcl() {
             current_dd = current_dd[0]
 
         // пробегаем по всем дропдаунам на странице
-        $('.dropdown').each(function() {
+        $('.dropdown').each(function () {
             // let parent = $(this).parent()[0];
             if (this == current_dd) {// console.log('in edit');
-            // event.preventDefault();
-            // return false;
+                // event.preventDefault();
+                // return false;
             } else {
                 $(this).children('.dropdown_list').addClass('hide');
                 // console.log(this + 'hided');
@@ -131,7 +131,7 @@ function init_vcl() {
     //
     // load stored for ALL inputs
     //
-    $('.wrapper').each(function() {
+    $('.wrapper').each(function () {
         let field_name = $(this).attr('id');
         let value = load_storage(field_name, '');
         let input = $(this).find('.inp');
@@ -139,11 +139,11 @@ function init_vcl() {
         input.val(value);
         check_edit_empty(this);
     });
-    $('.wrapper .inp').on('focus', function() {
+    $('.wrapper .inp').on('focus', function () {
         let wrapper = $(this).parents('.wrapper');
         check_edit_empty(wrapper);
         //let label = $(parent).find('label');        label.removeClass('hs');
-    }).on('input', function() {
+    }).on('input', function () {
         // save modified input for SIMPLE  
         let wrapper = $(this).parents('.wrapper');
         let field_name = $(wrapper).attr('id');
@@ -152,10 +152,12 @@ function init_vcl() {
 
         check_edit_empty(wrapper);
     });
-    $('[data-type="date"] input').on('focus', function() {/*console.log('date focus');*/
-    }).on('blur', function() {/*    console.log('date blur');*/
+    $('[data-type="date"] input').on('focus', function () {/*console.log('date focus');*/
+    }).on('blur', function () {/*    console.log('date blur');*/
     });
-     $('[data-type] input').on('focus', function() {
-          $('[data-type] .err').addClass('hide');
+
+    $('[data-type] .err').addClass('hide');
+    $('[data-type] input').on('focus', function () {
+        $('[data-type] .err').addClass('hide');
     });
 }
