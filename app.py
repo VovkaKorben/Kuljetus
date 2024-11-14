@@ -1,143 +1,228 @@
-from internal import app
+# import sys
+# sys.path.append("C:\\SDK\\py")
+from internal import app, read_db
 import internal, os, io, traceback, json
 
 from werkzeug.exceptions import HTTPException
 from flask import Flask, jsonify, request, session, render_template
 
-SENDER_CITY1 = 11
-SENDER_CITY2 = 12
-SENDER_INIT = 0
-SENDER_LANG = 20
+import inspect
+
+
+def is_function_available(func_name):
+    for name, obj in globals().items():
+        if name == func_name and inspect.isfunction(obj):
+            return True
+    return False
+
+
+def phone_ok(phone_no: str) -> bool:
+    collected = ""
+    for c in phone_no:
+        if c.isdigit:
+            collected += c
+    result = len(collected) in [10, 12]
+
+    return result
+
+
+def city_ok(city_name: str) -> bool:
+    search = read_db(
+        sql_filename="city/cityexact.sql",
+        params={"cityname": city_name.strip().lower()},
+    )
+    return len(search) == 1
+
+
+def date_ok(date: str) -> bool:
+    return True
 
 
 # по заданному ID языка читает все текстовые переводы в нужные DOM-элементы
 # также устанавливает значение в localStorage
-def update_lang(params: dict, lang: int):
-    lang = int(lang)
-    params["data"].update({"lang": lang})
-    # result["data"].update({"city2": data["city2"]})
+def update_lang(params: dict, language_id: int):
+    # print("update_lang", language_id)
+    language_id = int(language_id)
+    params["storage"].update({"lang": language_id})
 
-    langs = internal.read_db(sql_filename="lang.sql")
+    # setup languages icons
+    langs = internal.read_db(sql_filename="lang/language_list.sql")
     for id in langs:
+        is_selected = id["language_id"] == language_id
+        css_mode = "css_add" if is_selected else "css_remove"
         params["dom"].append(
             {
-                "selector": f"[data-langid='{id['lang']}']",
-                "css_add" if id["lang"] == lang else "css_remove": ["selected"],
+                "selector": "[data-langid='{0}']".format(id["language_id"]),
+                css_mode: ["lang_selected"],
             }
         )
 
-    transl = internal.read_db(sql_filename="translation.sql",params= {"lang": lang})
-    for i in transl:
-        params["dom"].append(
-            {"selector": f"[data-lang='{i['dom']}']", "html": i["translation"]}
-        )
+    transl = internal.read_db(
+        sql_filename="lang/translation.sql",
+        params={"lang": language_id},
+    )
+    for item in transl:
+
+        value = {"selector": item["selector_name"]}
+        if item["attr"] is None:
+            value["html"] = item["translation"]
+        else:
+            value["attr_set"] = [{"attr": item["attr"], "value": item["translation"]}]
+        params["dom"].append(value)
     return params
 
 
 @app.route("/")
 def main():
-    languages = internal.read_db(sql_filename="lang.sql")
-    return render_template("main.html", languages=languages)
+
+    languages = internal.read_db(
+        sql_filename="lang/language_list.sql",
+    )
+    with open("fields.json", "r") as file:
+        fields = json.load(file)
+    return render_template(
+        "main.html",
+        languages=languages,
+        fields=fields,
+    )
 
 
-def city_input(params: dict, cityname: str, elem: str, sender: int) -> dict:
-    show = sender != SENDER_INIT
+def city_input(params: dict, value: str, sender: str) -> dict:
+    search_value = value.strip().lower()
+    show_dropdown_list = len(search_value) > 0
 
-    if show:
-        search_cityname = cityname.strip().lower()
-        show = len(search_cityname) > 0
-
-    if show:  # check exact name
-        search = internal.read_db(
-          sql_filename=  "cityexact.sql",params= {"cityname": search_cityname}
+    if show_dropdown_list:  # check exact name
+        search = read_db(
+            sql_filename="city/cityexact.sql",
+            params={"cityname": search_value},
         )
         if len(search) == 1:
-            show = False
+            show_dropdown_list = False
 
-    if show:  # check variants
+    if show_dropdown_list:  # check variants
         search = internal.read_db(
-           sql_filename= "citysearch.sql",params= {"cityname": search_cityname}
+            sql_filename="city/citysearch.sql",
+            params={"cityname": search_value},
         )
-        show = len(search) > 0
+        show_dropdown_list = len(search) > 0
 
-    if show:
-        html = ""
-        for i in search:
-            html += f"<div data-cityid={ i['city_id'] } class='flex_lc'><span data-text>{i['city_name']}</span><span class='region'>{i['region_name']}</span></div>"
+    selector = f"#{sender} .dropdown_list"
+    if show_dropdown_list:
+        html = render_template(
+            "dropdown.html",
+            search=search,
+        )
         params["dom"].append(
-            {"selector": elem, "html": html, "css_remove": ["dropdown_hide"]}
+            {
+                "selector": selector,
+                "html": html,
+                "css_remove": ["hide"],
+            }
         )
 
-    if not show:
-        params["dom"].append({"selector": elem, "css_add": ["dropdown_hide"]})
+    else:
+        params["dom"].append(
+            {
+                "selector": selector,
+                "css_add": ["hide"],
+            }
+        )
+    return params
+
+
+def sendapp(params: dict, input_data: dict) -> dict:
+
+    # {'username': '', 'userphone': '', 'city1': '', 'city2': '', 'usermessage': '', 'sender': 'sendapp'}
+    # на входе у нас так же есть lang_id
+    # на выход мы отдаем сообщение об ошибке сразу переведенное
+    # "error":"#err_user_phone" - это сразу и тэг, куда отдаем перевод
+    # и сразу индекс в базе, откуда читаем нужный нам перевод по lang_id
+    # print(globals())
+    err = None
+    with open("fields.json", "r") as file:
+        fields = json.load(file)
+    for f in fields:
+        if f["id"] not in input_data:
+            print(f"[sendapp]  Field {f['id'].upper()} not found in input data!")
+            exit()
+        required = f["required"] if "required" in f else 1
+        if required:
+
+            value = input_data[f["id"]].strip()
+            if len(value) == 0:
+                err = {"id": f["id"], "message_code": f["required_failed_message"]}
+                break
+
+            func_name = f["validation"] if "validation" in f else None
+            if func_name is not None:
+                if not is_function_available(func_name):
+                    print(f"[sendapp]  Validation function '{func_name}' specified for field {f['id'].upper()}, but function not found!")
+                    exit()
+                func = globals()[func_name]  # Получение функции по имени
+                if not func(value):
+                    err = {"id": f["id"], "message_code": f["validation_failed_message"]}
+                    break
+
+    if err is None:
+        # no errors, save to DB
+        pass
+    else:
+        # читаем сообщение об ошибке из базы
+        msg = read_db(
+            sql_filename="lang/get_msg.sql",
+            params={"language_id": input_data["lang"], "selector_id": err["message_code"]},
+        )
+        # если сообщения нет - выводим заглушку
+        if len(msg) == 0:
+            msg = f"Msg for lang {input_data['lang']} and with code {err['message_code']} is absent in DB!"
+        else:
+            msg = msg[0]["translation"]
+        # рисуем сообщение
+        params["dom"].append(
+            {
+                "selector": f"#{err['id']} .err",
+                "html": msg,
+            }
+        )
+        # прячем все другие сообщения кроме нужного
+        for f in fields:
+            if f["id"] == err["id"]:
+                mode = "css_remove"
+            else:
+                mode = "css_add"
+
+            params["dom"].append(
+                {
+                    "selector": f"#{f['id']} .err",
+                    mode: ["hide"],
+                }
+            )
+
     return params
 
 
 @app.route("/parse_data", methods=["POST"])
 def parse_data():
-    data = json.loads(request.get_data())
-    result = {"dom": [], "data": {}}
-    sender = data["sender"] if "sender" in data else 0
+    input_data = json.loads(request.get_data())
+    result = {
+        "dom": [],
+        "storage": {},
+    }
+    sender = input_data["sender"].upper()
+    if sender == "LANG":
+        result = update_lang(result, input_data["lang"])
 
-    if sender in [SENDER_CITY1]:
-        result["data"].update({"city1": data["city1"]})
-    if sender in [SENDER_CITY2]:
-        result["data"].update({"city2": data["city2"]})
-    if sender in [SENDER_CITY1, SENDER_INIT]:
-        result = city_input(result, data["city1"], "#city1_dd", sender)
-    if sender in [SENDER_CITY2, SENDER_INIT]:
-        result = city_input(result, data["city2"], "#city2_dd", sender)
-    if sender in [SENDER_LANG, SENDER_INIT]:
-        result = update_lang(result, data["lang"])
+    elif sender == "CITY1" or sender == "CITY2":
+        value = input_data["city1"] if sender == "CITY1" else input_data["city2"]
+        result = city_input(result, value, input_data["sender"])
+        # city_res = internal.read_db(
+        #     sql_filename="citydist_prepare.sql",
+        #     params={"city_name": value.lower()},
+        # )
 
-    # calculate
-    mode, city1_name, city2_name, dist = 0, "", "", 0
-    city1 = data["city1"].strip()
-    if len(city1):
-        city1_res = internal.read_db(
-           sql_filename= "citydist_prepare.sql", params={"city_name": city1.lower()}
-        )
-        if len(city1_res) == 1:
-            mode |= 0x02  # city1 OKзн
-            city1_name = city1_res[0]["city_name"]
-        else:
-            mode |= 0x01  # city1 search error
-            city1_name = city1
-
-    city2 = data["city2"].strip()
-    if len(city2):
-        city2_res = internal.read_db(
-          sql_filename=  "citydist_prepare.sql",params= {"city_name": city2.lower()}
-        )
-        if len(city2_res) == 1:
-            mode |= 0x08  # city2 OK
-            city2_name = city2_res[0]["city_name"]
-        else:
-            mode |= 0x04  # city2 search error
-            city2_name = city2
-
-    # convert bits to msg index
-    mode = [1, 2, 1, 0, 3, 4, 3, 0, 1, 2, 5, 0, 0, 0, 0, 0][
-        mode
-    ]  # 0  error 1	intro   2	c1 not found    3	c2 not found    4	c1/c2 not found 5	OK
-    # get message from table
-    msg = internal.read_db(
-        sql_filename="citydist_message.sql", params={"mode": mode, "lang": data["lang"]}
-    )
-    msg = msg[0]["translation"]
-    if mode == 5:
-        dist_res = internal.read_db(
-            "citydist.sql",
-            {
-                "city1": city1_res[0]["city_id"],
-                "city2": city2_res[0]["city_id"],
-            },
-        )
-        dist = round(dist_res[0]["dist"] / 1000)
-    # if len(dist):
-    msg = msg.format(
-        city1=city1_name, city2=city2_name, dist=dist, price=round(dist * 1.3)
-    )
-    result["dom"].append({"selector": "#calculations", "html": msg})
+    elif sender == "SENDAPP":
+        result = sendapp(result, input_data)
+    else:
+        pass  # unkn sender
 
     return jsonify(result)

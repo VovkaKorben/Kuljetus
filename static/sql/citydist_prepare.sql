@@ -1,1 +1,4 @@
-SELECT * FROM city_names where city_name_lower =:city_name GROUP BY city_id
+SELECT * 
+FROM city_names 
+where city_name_lower =:city_name 
+GROUP BY city_id;

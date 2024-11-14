@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+body,
+.footer {
+    background-color: #253965;
+}
+
+body,
+input,
+html,
+textarea {
+
+
+
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+}
+
+.fs {
+    font-weight: 200;
+}
+
+.rale {
+    font-family: "Raleway", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body,
+a,
+input[type="button"] {
+    color: #ffffff;
+}
+
+input[type="button"] {
+    background-color: #3960bf;
+    border: none;
+}
+
+
+#lang {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: stretch;
+}
+
+#lang img {
+    opacity: 0.1;
+    cursor: pointer;
+    padding: 1px 1px 0px 0px;
+}
+
+#lang img:hover {
+    opacity: 0.9;
+    transition: all 0.3s ease-out;
+}
+
+#lang img.selected {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    bottom: 0;
+    font-weight: 200
+}
+
+a:active,
+a:link,
+a:visited {
+    text-decoration: none
+}
+
+a:hover {
+    color: #72b7ff
+}
+
+.h {
+    display: none
+}
+
+
+
+@media (min-width: 768px) {
+
+    /* desktop */
+    body,
+    html,
+    input,
+    textarea {
+        font-weight: 400;
+        font-size: 18px;
+    }
+
+    .size_bigger {
+        font-size: 60px;
+        font-weight: 600;
+    }
+
+    .size_big {
+        font-size: 40px;
+        font-weight: 500;
+    }
+
+    .footer {
+        height: 32px;
+    }
+
+    .footer div {
+        font-size: 16px;
+        padding: 0px 50px;
+    }
+
+    #content {
+        width: 60%;
+    }
+
+
+
+}
+
+@media (max-width: 768px) {
+
+    /* PHONE */
+    body,
+    html,
+    input {
+        font-weight: 200;
+        font-size: 12px;
+    }
+
+    .footer {
+        height: 20px;
+    }
+
+    .footer div {
+        font-size: 9px;
+        padding: 0px 10px;
+    }
+
+    #lang {
+        flex-direction: column
+    }
+
+    .size_bigger {
+        font-size: 22px;
+        font-weight: 400
+    }
+
+    .size_big {
+        font-size: 17px;
+        font-weight: 400
+    }
+
+    #content {
+        width: 98%;
+    }
+
+
+
+}
+
+
+textarea {
+    resize: none
+}
+
+input,
+textarea {
+    color: #111;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    outline: 0;
+
+    border-radius: 5px;
+    border: 2px solid #aaa;
+  
+}
+
+/* input:hover,textarea:hover{border-color:#67b1fe;transition:all 0.2s ease;} */
+input:focus,
+textarea:focus {
+    /* border-color:#0097ff; */
+    border-color: #3960bf;
+    transition:all 150ms ease;
+    
+}
+
+.error_input {
+    border-color: red !important;
+}
+
+
+.dropdown_cont {
+    width: 100%;
+    position: relative
+}
+
+.dropdown_list {
+    border: 1px #aaa solid;
+    border-radius: 5px;
+    background-color: #111;
+    max-height: 300px;
+    z-index: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    width: 99%
+}
+
+.dropdown_list div {
+    text-align: left;
+    cursor: pointer;
+    padding: 7px 10px;
+    white-space: nowrap
+}
+
+span.region {
+    color: #414141;
+    padding-left: 6px
+}
+
+.dropdown_list div.selected {
+    background-color: #222
+}
+
+.dropdown_hide {
+    display: none
+}
+
+#outer_content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: stretch;
+}
+
+/* #content{margin-left:auto;margin-right:auto;display:grid;} */
+/* #content>*{border:1px dotted #32d41236;} */
+input {
+    margin-bottom: 15px;
+    min-height: 50px
+}
+
+/* #outer_content */
+/* #adv_content */
+/* #form_content */
+#hdr_content {
+    text-align: center;
+}
+
+#adv_content,
+#form_content {
+    width: 40%;
+}
+
+#adv_content {
+    text-align: right;
+}
+
+#form_content {
+    text-align: left;
+    width: 300px;
+    min-width: 300px;
+}
+
+
+::placeholder {
+    color: #0007;
+    opacity: 1;
+    /* Firefox */
+}
+
+::-ms-input-placeholder {
+    /* Edge 12 -18 */
+    color: #0007;
+}
+
+
+.edit_wrapper
+{
+    position:relative;
+}
+
+.edit_wrapper label
+{
+    color:black;
+    position:absolute;
+    left:9px;
+    top:5px;
+    font-size:12px;
+}
+.edit_wrapper input
+{
+      padding: 15px 7px 3px 7px;
+}

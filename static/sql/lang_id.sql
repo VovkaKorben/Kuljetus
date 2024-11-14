@@ -1,4 +1,0 @@
-select
-    lang
-from
-    lang;

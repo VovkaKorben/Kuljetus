@@ -15,3 +15,7 @@ JS после загрузки документа читает эти данны
 innerText (для тегов)
 value (для input)
 ==============================================================================
+
+data-type="dropdown"    data-type="simple"    data-type="date"  data-type="memo"
+
+    

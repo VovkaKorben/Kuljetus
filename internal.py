@@ -85,10 +85,12 @@ def sqlite_trace_callback(value):
     # url = url[0]
 
     value = value.replace("\n", " ")
+    value = value.replace("\t", " ")
     while value.find("  ") != -1:
         value = value.replace("  ", " ")
 
-    sqlite3log = open("sqlite3.log", "a")
+    logfile = os.path.join(app.root_path,  "sqlite3.log")
+    sqlite3log = open(logfile, "a")
     # sqlite3log.write(f"[{url}] {value}\n")
     sqlite3log.write(f"{value}\n")
     sqlite3log.close()

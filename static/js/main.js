@@ -1,34 +1,58 @@
-
 function parse_answer(result) {
-    if ('data' in result) {
-        for (k in result.data) {
-            // console.log('data parse_answer:', k, '', result.data[k]);
-            save_storage(k, result.data[k]);
+    if ('storage'in result) {
+        for (k in result.storage) {
+            save_storage(k, result.storage[k]);
         }
-
     }
 
-    if ('dom' in result) {
-
-        jQuery.each(result.dom, function (index, item) {
+    if ('dom'in result) {
+        jQuery.each(result.dom, function(index, item) {
             // do something with `item` (or `this` is also `item` if you like)
-            elem = $(item.selector);
-            if (elem) {
-                if ('html' in item)
+            let elem = $(item.selector);
+            
+            console.log(JSON.stringify(item, null, 2));
+            if (elem.length > 0) {
+
+                if ('html'in item)
                     $(elem).html(item.html);
-                if ('css_add' in item)
-                    jQuery.each(item.css_add, function (index, item) {
-                        $(elem).addClass(item);
+
+                if ('css_add'in item)
+                    jQuery.each(item.css_add, function(i, v) {
+                        $(elem).addClass(v);
                     });
-                if ('css_remove' in item)
-                    jQuery.each(item.css_remove, function (index, item) {
-                        $(elem).removeClass(item);
+                if ('css_remove'in item)
+                    jQuery.each(item.css_remove, function(i, v) {
+                        $(elem).removeClass(v);
                     });
-            }
+                if ('attr_set'in item)
+                    jQuery.each(item.attr_set, function(i, v) {
+                        $(elem).attr(v.attr, v.value);
+                    });
+
+            } else
+                console.log(`[parse_answer] selector '${item.selector}' not found.`);
 
         });
     }
 }
+
+function collect_fields(fields) {
+    if (fields.length == 0)
+        // for empty input get all fields
+
+        $('[data-type]').each(function() {
+            fieldname = $(this).attr('id');
+            fields.push(fieldname);
+        });
+
+    let collect = {};
+    $.each(fields, function(i, v) {
+        let fieldval = $(`#${v}`).find('.inp').val();
+        collect[v] = fieldval;
+    });
+    return collect;
+}
+
 function send_data(data) {
 
     fetch('/parse_data', {
@@ -38,56 +62,49 @@ function send_data(data) {
         },
         body: JSON.stringify(data)
     }).then(response => response.json()).then(result => {
-        // console.log('Server response:', result);
         parse_answer(result);
     }
     ).catch(error => {
-        console.error('Error:', error);
+        console.log(`Error: ${error}`);
     }
     );
 }
-function init() {
-    let data = {
-        'lang': load_storage('lang', 0),
-        'city1': load_storage('city1', ''),
-        'city2': load_storage('city2', ''),
-        'sender': 0
-    }
-    send_data(data);
-    $('#city1').val(data.city1);
-    $('#city2').val(data.city2);
+
+
+function change_lang(lang_id) {
+    send_data({
+        'lang': lang_id,
+        sender: 'lang'
+    });
 
 }
-
-function apply_city(elem) {
-
-    let parent = $(elem).parent('.dropdown_list');
-    let edit = $(parent).prev('.dropdown_edit');
-    let txt = $(elem).find('span[data-text]')[0];
-    $(edit).val(txt.innerText);
-    $(parent).addClass('dropdown_hide');
-    txtinput_changed(edit);
-}
-$(document).ready(function () {
+$(document).ready(function() {
+    // setup dropdown etc
     init_vcl();
-    //  init();
 
-    /*
+    // language handler
+    $('#lang').on('click', 'img', function() {
+        change_lang($(this).data('langid'));
+    });
+    // init page with language request
+    change_lang(load_storage('lang', 0));
+
+    // hide errors
+    // $('.err').addClass('hide');
+
     
-        $('#lang').on('click', 'img', function () {
-            lang = $(this).data('langid');
-            send_data({
-                'city1': $('#city1').val(),
-                'city2': $('#city2').val(),
-                'lang': lang,
-                sender: 20
-            });
-        });
-    */
 
+    // send application
+    $('#sendapp').on('click', function() {
+        data = collect_fields([]);
+        // empty for all
+        data['sender'] = 'sendapp';
+        data['lang'] = load_storage('lang', 0);
+        send_data(data);
+    });
 
-    // $('#city1').trigger('focus');
-    // $('#city1').focus();
-    // txtinput_changed($('#city1'));
-    // $('#city1').focus();
+    
+    $('#sendapp').trigger('click');
+    
+    // city_input_changed($('#city2_input'));    $('#city2_input').focus();
 });

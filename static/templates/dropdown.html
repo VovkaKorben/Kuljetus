@@ -1,0 +1,6 @@
+{% for s in search %}
+<div data-cityid="{{s.city_id}}" class='flex_lc'>
+   <span class='city'>{{s.city_name}}</span>
+   <span class='region'>{{s.region_name}} </span>
+</div>
+{% endfor %}

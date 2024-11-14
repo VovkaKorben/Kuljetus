@@ -1,0 +1,44 @@
+[
+    {
+        "id": "city1",
+        "validation": "city_ok",
+        "required": 1,
+        "required_failed_message": -1,
+        "validation_failed_message": -2,
+        "type": "dropdown"
+    },
+    {
+        "id": "city2",
+        "validation": "city_ok",
+        "required": 1,
+        "type": "dropdown",
+        "required_failed_message": -1,
+        "validation_failed_message": -2
+    },
+    {
+        "id": "username",
+        "required": 1,
+        "type": "simple",
+        "required_failed_message": -3
+    },
+    {
+        "id": "userphone",
+        "validation": "phone_ok",
+        "required": 1,
+        "type": "simple",
+        "required_failed_message": -4,
+        "validation_failed_message": -5
+    },
+    {
+        "id": "traveldate",
+        "validation": "date_ok",
+        "required": 1,
+        "type": "date",
+        "required_failed_message": -6,
+        "validation_failed_message": -7
+    },
+    {
+        "id": "usermessage",
+        "type": "memo"
+    }
+]
