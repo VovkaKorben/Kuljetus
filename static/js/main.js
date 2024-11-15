@@ -1,3 +1,5 @@
+const LANG_KEY = 'lang_id'
+
 function parse_answer(result) {
     if ('storage'in result) {
         for (k in result.storage) {
@@ -9,7 +11,7 @@ function parse_answer(result) {
         jQuery.each(result.dom, function(index, item) {
             // do something with `item` (or `this` is also `item` if you like)
             let elem = $(item.selector);
-            
+
             // console.log(JSON.stringify(item, null, 2));
             if (elem.length > 0) {
 
@@ -35,7 +37,16 @@ function parse_answer(result) {
         });
     }
 }
+function request_translation(full) {
 
+   //     if (full)        field_list = [];    else
+        field_list = ['city1', 'city2'];
+    data = collect_fields(field_list);
+    data['full'] = full;
+        data[LANG_KEY] =  load_storage(LANG_KEY, 0);
+    data['sender'] = 'LANG';
+    send_data(data);
+}
 function collect_fields(fields) {
     if (fields.length == 0)
         // for empty input get all fields
@@ -70,7 +81,7 @@ function send_data(data) {
     );
 }
 
-
+/*
 function change_lang(lang_id) {
     send_data({
         'lang': lang_id,
@@ -78,21 +89,23 @@ function change_lang(lang_id) {
     });
 
 }
+*/
 $(document).ready(function() {
     // setup dropdown etc
     init_vcl();
 
     // language handler
     $('#lang').on('click', 'img', function() {
-        change_lang($(this).data('langid'));
+        let lang_id = $(this).data('langid');
+        save_storage(LANG_KEY, lang_id);
+        request_translation(1);
     });
     // init page with language request
-    change_lang(load_storage('lang', 0));
+    request_translation(1);
+    // change_lang(load_storage('lang', 0));
 
     // hide errors
     // $('.err').addClass('hide');
-
-    
 
     // send application
     $('#sendapp').on('click', function() {
@@ -103,8 +116,7 @@ $(document).ready(function() {
         send_data(data);
     });
 
-    
     // $('#sendapp').trigger('click');
-    
+
     // city_input_changed($('#city2_input'));    $('#city2_input').focus();
 });

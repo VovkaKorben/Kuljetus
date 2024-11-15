@@ -8,3 +8,6 @@ parse_city.py
 parse_dist.py
 sqlite3.log
 !todo.txt
+mailtest.py
+internal2.py
+drugs.db

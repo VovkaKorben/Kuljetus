@@ -1,3 +1,5 @@
+
+
 function apply_city(elem) {
 
     let dropdown_list = $(elem).parent('.dropdown_list');

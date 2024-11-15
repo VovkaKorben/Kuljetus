@@ -5,8 +5,13 @@ import internal, os, io, traceback, json
 
 from werkzeug.exceptions import HTTPException
 from flask import Flask, jsonify, request, session, render_template
+import time
 
 import inspect
+
+LANG_KEY = "lang_id"
+DISTANCE_OK_ID = -100
+DISTANCE_UNKNOWN_ID = -101
 
 
 def phone_ok(phone_no: str) -> bool:
@@ -31,29 +36,55 @@ def date_ok(date: str) -> bool:
     return True
 
 
-# по заданному ID языка читает все текстовые переводы в нужные DOM-элементы
-# также устанавливает значение в localStorage
-def update_lang(params: dict, language_id: int):
-    # print("update_lang", language_id)
-    language_id = int(language_id)
-    params["storage"].update({"lang": language_id})
+# если в params full==1, то выдаем полный перевод
+# так же в любом случае выдаем перевод для расчёта дистанции
 
+
+def update_lang(params: dict, input: dict):
     # setup languages icons
-    langs = internal.read_db(sql_filename="lang/language_list.sql")
-    for id in langs:
-        is_selected = id["language_id"] == language_id
-        css_mode = "css_add" if is_selected else "css_remove"
+    langs = read_db(sql_filename="lang/language_list.sql")
+    for lang in langs:
+        css_mode = "css_add" if lang["language_id"] == input["lang_id"] else "css_remove"
         params["dom"].append(
             {
-                "selector": "[data-langid='{0}']".format(id["language_id"]),
+                "selector": f"[data-langid='{lang['language_id']}']",
                 css_mode: ["lang_selected"],
             }
         )
-
-    transl = internal.read_db(
-        sql_filename="lang/translation.sql",
-        params={"lang": language_id},
+    # вычисляем дистанцию
+    dist = read_db(
+        sql_filename="dist/dist.sql",
+        params={
+            "city1": input["city1"].strip().lower(),
+            "city2": input["city2"].strip().lower(),
+        },
     )
+    selector_id = DISTANCE_UNKNOWN_ID if len(dist) == 0 else DISTANCE_OK_ID
+    transl = read_db(
+        sql_filename="lang/get_msg.sql",
+        params={
+            "language_id": input["lang_id"],
+            "selector_id": selector_id,
+        },
+    )
+    # форматируем полученное сообщение о дистанции
+    if selector_id == DISTANCE_OK_ID:
+        if len(transl) == 0:
+            print(f"[update_lang] No translation found selector_id: {selector_id} and lang_id: {input['lang_id']}")
+            exit()
+        # transl[0]["translation"] = json.dumps(transl[0], ensure_ascii=False)
+        transl[0]["translation"] += " (formatted)"
+
+    # добавляем остальной перевод, при необходимости
+    if input["full"]:
+        transl.extend(
+            read_db(
+                sql_filename="lang/translation.sql",
+                params={"lang_id": input["lang_id"]},
+            )
+        )
+
+    # переводим полученные элементы в формат, понятный JS
     for item in transl:
 
         value = {"selector": item["selector_name"]}
@@ -62,6 +93,7 @@ def update_lang(params: dict, language_id: int):
         else:
             value["attr_set"] = [{"attr": item["attr"], "value": item["translation"]}]
         params["dom"].append(value)
+
     return params
 
 
@@ -189,7 +221,31 @@ def sendapp(params: dict, input_data: dict) -> dict:
             }
         )
         # стираем все поля из localstorage
-        
+
+        # готовим запрос в базу на запись
+        values = {}
+        for f in fields:
+            values[f["id"]] = input_data[f["id"]]
+        values["ip"] = input_data["ip"]
+        values["created"] = int(time.time())
+
+        # формируем запрос
+        query = "insert into orders ({0}) values ({1});".format(
+            ",".join(list(values.keys())),
+            ",".join([":" + str(x) for x in list(values.keys())]),
+        )
+        read_db(
+            sql_query=query,
+            params=values,
+            result_required=False,
+        )
+        params["dom"].append(
+            {
+                "selector": "#senddone",
+                "css_remove": ["hide"],
+                "html": query,
+            }
+        )
     else:
         # читаем сообщение об ошибке из базы
         msg = read_db(
@@ -234,7 +290,7 @@ def parse_data():
     }
     sender = input_data["sender"].upper()
     if sender == "LANG":
-        result = update_lang(result, input_data["lang"])
+        result = update_lang(result, input_data)
 
     elif sender == "CITY1" or sender == "CITY2":
         value = input_data["city1"] if sender == "CITY1" else input_data["city2"]
@@ -245,6 +301,7 @@ def parse_data():
         # )
 
     elif sender == "SENDAPP":
+        input_data["ip"] = request.remote_addr
         result = sendapp(result, input_data)
     else:
         pass  # unkn sender

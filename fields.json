@@ -39,6 +39,7 @@
     },
     {
         "id": "usermessage",
-        "type": "memo"
+        "type": "memo",
+        "required": 0
     }
 ]
