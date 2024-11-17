@@ -116,7 +116,7 @@ $(document).ready(function() {
         send_data(data);
     });
 
-    // $('#sendapp').trigger('click');
+    $('#sendapp').trigger('click');
 
     // city_input_changed($('#city2_input'));    $('#city2_input').focus();
 });

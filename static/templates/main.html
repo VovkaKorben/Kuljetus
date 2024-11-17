@@ -31,22 +31,26 @@
       Воспользуйтесь калькулятором расстояния, чтобы узнать примерную цену.
       Обратите внимание, что цена, рассчитаная на калькуляторе дана в справочных целях.
       Уточните цену, связавшись с оператором.</div>
-    <div id="distance_info">Расчёт расстояния  </div>
-    
+    <div id="distance_info">Расчёт расстояния </div>
+
     <!-- <div id="dummy_arrow"> <img src="{{ url_for('static', filename='img/arrow.png') }}" /> </div> -->
     <input id="sendapp" type="button" value="Confirm application" class="btn">
     <div id="senddone" class="hide">senddone</div>
 
 
     {% for field in fields %}
+    {% if field.visible %}
+
     {% set template_path = "vcl/" + field.type + ".html" %}
     {% with id=field.id %}
     {% include template_path %}
     {% endwith %}
+
+    {% endif %}
     {% endfor %}
   </div>
 
-  
+
   </div>
 
 

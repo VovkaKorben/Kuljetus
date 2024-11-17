@@ -22,6 +22,16 @@ app = Flask(
 )
 
 
+def log_to_file(msg):
+    msg = "[{d}] {m}\n".format(
+        d=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        m=msg,
+    )
+    with open("logfile.txt", "a", encoding="utf-8") as logfile:
+        logfile.write(msg)
+    print(msg)
+
+
 class db_error(Exception):
     """Base class for other exceptions"""
 
@@ -94,7 +104,7 @@ def read_db(
             if result_required:
                 data = cur.fetchall()
             else:
-                conn.execute('commit;')
+                conn.execute("commit;")
         finally:
             cur.close()
 

@@ -11,3 +11,4 @@ sqlite3.log
 mailtest.py
 internal2.py
 drugs.db
+logfile.txt

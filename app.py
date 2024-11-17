@@ -1,6 +1,6 @@
 # import sys
 # sys.path.append("C:\\SDK\\py")
-from internal import app, read_db
+from internal import app, read_db, log_to_file
 import internal, os, io, traceback, json
 
 from werkzeug.exceptions import HTTPException
@@ -8,10 +8,23 @@ from flask import Flask, jsonify, request, session, render_template
 import time
 
 import inspect
-
+import my_email
 LANG_KEY = "lang_id"
 DISTANCE_OK_ID = -100
 DISTANCE_UNKNOWN_ID = -101
+
+
+def send_mail(values):
+    message = render_template(
+        "mail.html",
+        report=values,
+    )
+    with open("recipients.txt", "r") as recipients_file:
+        # sqlite3log.write(f"[{url}] {value}\n")
+        recipients = recipients_file.readlines()
+    my_email.send_email(message, recipients)
+    
+    
 
 
 def phone_ok(phone_no: str) -> bool:
@@ -34,6 +47,14 @@ def city_ok(city_name: str) -> bool:
 
 def date_ok(date: str) -> bool:
     return True
+
+
+def get_ip(request, input_data):
+    return "127 0 0 1"
+
+
+def get_timestamp(request, input_data):
+    return "its time!"
 
 
 # если в params full==1, то выдаем полный перевод
@@ -155,13 +176,13 @@ def city_input(params: dict, value: str, sender: str) -> dict:
     return params
 
 
-def sendapp(params: dict, input_data: dict) -> dict:
+def sendapp(params: dict, request, input_data: dict) -> dict:
 
-    def is_function_available(func_name):
+    def get_global_function(func_name):
         for name, obj in globals().items():
             if name == func_name and inspect.isfunction(obj):
-                return True
-        return False
+                return globals()[func_name]
+        return None
 
     # {'username': '', 'userphone': '', 'city1': '', 'city2': '', 'usermessage': '', 'sender': 'sendapp'}
     # на входе у нас так же есть lang_id
@@ -170,35 +191,73 @@ def sendapp(params: dict, input_data: dict) -> dict:
     # и сразу индекс в базе, откуда читаем нужный нам перевод по lang_id
     # print(globals())
     err = None
+    values = {}
     with open("fields.json", "r") as file:
         fields = json.load(file)
     for f in fields:
-        if f["id"] not in input_data:
-            print(f"[sendapp]  Field {f['id'].upper()} not found in input data!")
-            exit()
-        required = f["required"] if "required" in f else 1
-        if required:
 
+        if f["visible"]:  # видимое поле, должно придти с формы
+            if f["id"] not in input_data:
+                log_to_file(f"[sendapp]  Field {f['id'].upper()} not found in input data!")
+                exit()
+            required = f["required"] if "required" in f else 1
             value = input_data[f["id"]].strip()
-            if len(value) == 0:
-                err = {"id": f["id"], "message_code": f["required_failed_message"]}
-                break
+            if required:
 
-            func_name = f["validation"] if "validation" in f else None
-            if func_name is not None:
-                if not is_function_available(func_name):
-                    print(f"[sendapp]  Validation function '{func_name}' specified for field {f['id'].upper()}, but function not found!")
-                    exit()
-                func = globals()[func_name]  # Получение функции по имени
-                if not func(value):
-                    err = {"id": f["id"], "message_code": f["validation_failed_message"]}
+                if len(value) == 0:
+                    err = {"id": f["id"], "message_code": f["required_failed_message"]}
                     break
 
+                func_name = f["validation"] if "validation" in f else None
+                if func_name is not None:
+                    func = get_global_function(func_name)  # Получение функции по имени
+                    if func is None:
+                        log_to_file(f"[sendapp]  Validation function '{func_name}' specified for field {f['id'].upper()}, but not found!")
+                        exit()
+                    if not func(value):
+                        err = {"id": f["id"], "message_code": f["validation_failed_message"]}
+                        break
+            values[f["id"]] = value
+        else:  # невидимое поле, например IP или текущая дата
+            func_name = f["retrieve"] if "retrieve" in f else None
+            if func_name is None:
+                log_to_file(f"[sendapp]  Retrieve function for invisible field {f['id'].upper()} not specified!")
+                break
+            func = get_global_function(func_name)  # Получение функции по имени
+            if func is None:
+                log_to_file(f"[sendapp]  Retrieve function '{func_name}' for invisible field '{f['id'].upper()}' not found.")
+                exit()
+            values[f["id"]] = func(request, input_data)
+
     if err is None:
+
+        # готовим запрос в базу на запись
+
+        """for f in fields:
+        if f["visible"]:
+            values[f["id"]] = input_data[f["id"]]
+        else:
+            values["ip"] = input_data["ip"]
+            values["created"] = int(time.time())
+        """
+        # формируем запрос
+        query = "insert into orders ({0}) values ({1});".format(
+            ",".join(list(values.keys())),
+            ",".join([":" + str(x) for x in list(values.keys())]),
+        )
+        # save to DB
+        read_db(
+            sql_query=query,
+            params=values,
+            result_required=False,
+        )
+        log_to_file(values)
+        send_mail(values)
+
         # no errors, save to DB
         # прячем все поля кроме city1 city2
         for f in fields:
-            if f["id"] not in ["city1", "city2"]:
+            if f["id"] not in ["city1", "city2"] and f["visible"]:
                 params["dom"].append(
                     {
                         "selector": f"#{f['id']}",
@@ -213,32 +272,7 @@ def sendapp(params: dict, input_data: dict) -> dict:
             }
         )
         # показываем сообщение об отправке
-        params["dom"].append(
-            {
-                "selector": "#senddone",
-                "css_remove": ["hide"],
-                "html": "app send done",
-            }
-        )
-        # стираем все поля из localstorage
 
-        # готовим запрос в базу на запись
-        values = {}
-        for f in fields:
-            values[f["id"]] = input_data[f["id"]]
-        values["ip"] = input_data["ip"]
-        values["created"] = int(time.time())
-
-        # формируем запрос
-        query = "insert into orders ({0}) values ({1});".format(
-            ",".join(list(values.keys())),
-            ",".join([":" + str(x) for x in list(values.keys())]),
-        )
-        read_db(
-            sql_query=query,
-            params=values,
-            result_required=False,
-        )
         params["dom"].append(
             {
                 "selector": "#senddone",
@@ -246,6 +280,9 @@ def sendapp(params: dict, input_data: dict) -> dict:
                 "html": query,
             }
         )
+
+        # стираем все поля из localstorage
+
     else:
         # читаем сообщение об ошибке из базы
         msg = read_db(
@@ -302,7 +339,7 @@ def parse_data():
 
     elif sender == "SENDAPP":
         input_data["ip"] = request.remote_addr
-        result = sendapp(result, input_data)
+        result = sendapp(result, request, input_data)
     else:
         pass  # unkn sender
 

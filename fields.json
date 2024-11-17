@@ -5,7 +5,8 @@
         "required": 1,
         "required_failed_message": -1,
         "validation_failed_message": -2,
-        "type": "dropdown"
+        "type": "dropdown",
+        "visible": 1
     },
     {
         "id": "city2",
@@ -13,13 +14,15 @@
         "required": 1,
         "type": "dropdown",
         "required_failed_message": -1,
-        "validation_failed_message": -2
+        "validation_failed_message": -2,
+        "visible": 1
     },
     {
         "id": "username",
         "required": 1,
         "type": "simple",
-        "required_failed_message": -3
+        "required_failed_message": -3,
+        "visible": 1
     },
     {
         "id": "userphone",
@@ -27,7 +30,8 @@
         "required": 1,
         "type": "simple",
         "required_failed_message": -4,
-        "validation_failed_message": -5
+        "validation_failed_message": -5,
+        "visible": 1
     },
     {
         "id": "traveldate",
@@ -35,11 +39,23 @@
         "required": 1,
         "type": "date",
         "required_failed_message": -6,
-        "validation_failed_message": -7
+        "validation_failed_message": -7,
+        "visible": 1
     },
     {
         "id": "usermessage",
         "type": "memo",
-        "required": 0
+        "required": 0,
+        "visible": 1
+    },
+    {
+        "id": "ip",
+        "visible": 0,
+        "retrieve": "get_ip"
+    },
+    {
+        "id": "created",
+        "visible": 0,
+        "retrieve": "get_timestamp"
     }
 ]
